@@ -1,6 +1,9 @@
-import Rpi as GPIO
+import Rpi.GPIO as GPIO
 import time as sleep
 
+#signal is sent as input for this module:1=biodegradable;  0=relax position; -1=non-biodegradable
+
+#r_bin servo motor pwm pin output
 r_bin=7
 
 #run servo motor in bin
@@ -23,3 +26,8 @@ elif signal==-1
     SetPinAngle(r_bin,0)
 else
     SetPinAngle(r_bin,90)
+
+
+pwm.stop()
+GPIO.cleanup()
+GPIO.setwarnings(False)
