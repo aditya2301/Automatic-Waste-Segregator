@@ -9,13 +9,13 @@ r_bin=7
 #run servo motor in bin
 def SetPinAngle(pin,angle):
     GPIO.setmode(GPIO.BOARD)
-    GPIO.setup(7,GPIO.OUT)
+    GPIO.setup(pin,GPIO.OUT)
     pwm=GPIO.PWM(pin,50)
     duty=angle/18 + 2
-    GPIO.output(7,True)
+    GPIO.output(pin,True)
     pwm.ChangeDutyCycle(duty)
     sleep(2)
-    GPIO.output(7,False)
+    GPIO.output(pin,False)
     pwm.ChangeDutyCycle(0)
 
 
