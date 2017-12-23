@@ -22,8 +22,12 @@ def SetPinAngle(pin,angle):
 #r_bin lid position based on signal received
 if signal==1
     SetPinAngle(r_bin,180)
+    sleep(1)
+    SetPinAngle(r_bin,90)
 elif signal==-1
     SetPinAngle(r_bin,0)
+    sleep(1)
+    SetPinAngle(r_bin,90)
 else
     SetPinAngle(r_bin,90)
 
