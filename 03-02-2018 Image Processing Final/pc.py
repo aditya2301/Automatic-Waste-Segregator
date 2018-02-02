@@ -8,7 +8,7 @@ while True:
 		database=f.readlines()
 	#print(database)
 
-	dbx=dropbox.Dropbox('jj41foGWJMAAAAAAAAABdqzHTaTtQxJ7DEcKxciKPbYayZ0laFfGepQr_2m9XMxa')
+	dbx=dropbox.Dropbox('API KEY')
 	#dbx.users_get_current_account()
 	files=dbx.files_list_folder('/imageFiles').entries
 
