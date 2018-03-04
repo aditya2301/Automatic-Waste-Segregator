@@ -7,7 +7,7 @@ s = socket.socket()
 port = 80              
 
 # connect to the server on local computer
-s.connect(('104.196.154.179 ', port))
+s.connect(('IP addr of the server', port))
 
 
 f=open("7.jpeg","rb")
