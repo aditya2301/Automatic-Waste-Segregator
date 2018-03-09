@@ -325,15 +325,15 @@ def  imageProcessing():
                 print("Object is located at = ",end="")
                 if  cX<vertical:
                     print("1st Quadrant")
-                    #servoControl.quandrant1()
+                    servoControl.quandrant1()
                     #directionFlag=identification(image)
                 elif  cX>vertical:
                     print("2nd Quadrant")
-                    #servoControl.quadrant2()
+                    servoControl.quadrant2()
                     #directionFlag=identification(image)
                 elif cX==vertical:
                     print("Between 1 and 2nd Quadrant")
-                    #servoControl.quadrant12()
+                    servoControl.quadrant12()
                     #directionFlag=identification(image)
                 #servoControl.flap(directionFlag)
                 counter=0

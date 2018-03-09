@@ -17,10 +17,10 @@ MotorPin3   = 15    # pin11
 MotorPin4   = 16    # pin12
 MotorEnable2 = 18
 
-Motor_speed_f=34
-Motor_speed_b=30
-Motor_speed_r=37
-Motor_speed_l=37
+Motor_speed_f=47
+Motor_speed_b=47
+Motor_speed_r=47
+Motor_speed_l=47
 
 stop=0
 base_on=0
