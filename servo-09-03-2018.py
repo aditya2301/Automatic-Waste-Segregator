@@ -22,37 +22,37 @@ def shoulder():
 	center=325
 	pin=11
 	global pwm
+	for i in range(center,first_quadrant,1):
+		pwm.set_pwm(pin,0,i)
+		time.sleep(0.02)
+
 	for i in range(first_quadrant,second_quadrant,1):
 		pwm.set_pwm(pin,0,i)
-		time.sleep(0.01)
+		time.sleep(0.02)
 	global pwm
 	for i in range(second_quadrant,first_quadrant,-1):
 		pwm.set_pwm(pin,0,i)
-		time.sleep(0.01)
+		time.sleep(0.02)
 	global pwm
 	for i in range(first_quadrant,center,1):
 		pwm.set_pwm(pin,0,i)
-		time.sleep(0.01)
+		time.sleep(0.02)
 
 def elbow():
-	down=560
-	up=120
+	down=550
+	up=143
 	pin=7
 	global pwm
 	for i in range(up,down,1):
 		pwm.set_pwm(pin,0,i)
-		if i>250:
-			time.sleep(0.01)
-		else:
-			time.sleep(0.025)
+		time.sleep(0.01)
 	time.sleep(2)
+	#finger()
+	#time.sleep(3)
 	global pwm
 	for i in range(down,up,-1):
 		pwm.set_pwm(pin,0,i)
-		if i>250:
-			time.sleep(0.01)
-		else:
-			time.sleep(0.025)
+		time.sleep(0.01)
 
 def finger():
 	expand=460
@@ -96,6 +96,7 @@ elbow()
 time.sleep(2)
 print("starting wrist")'''
 #wrist()
-#shoulder()
+shoulder()
 elbow()
+wrist()
 #finger()
