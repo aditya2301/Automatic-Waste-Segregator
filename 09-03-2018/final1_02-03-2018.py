@@ -326,14 +326,23 @@ def  imageProcessing():
                 if  cX<vertical:
                     print("1st Quadrant")
                     servoControl.quandrant1()
+                    first_time=0
+                    frame_buffer=0
+                    continue
                     #directionFlag=identification(image)
                 elif  cX>vertical:
                     print("2nd Quadrant")
                     servoControl.quadrant2()
+                    first_time=0
+                    frame_buffer=0
+                    continue
                     #directionFlag=identification(image)
                 elif cX==vertical:
                     print("Between 1 and 2nd Quadrant")
                     servoControl.quadrant12()
+                    first_time=0
+                    frame_buffer=0
+                    continue
                     #directionFlag=identification(image)
                 #servoControl.flap(directionFlag)
                 counter=0
@@ -346,6 +355,7 @@ def  imageProcessing():
            #directionFlag=identification(image)
            #servoControl.flap(directionFlag)
            if frame_buffer%30==0:
+              frame_buffer=0
               refImg=image
               #refImg=refImg[0:x,0:y-90]
               refThresh=imageSubtract(refImg)
