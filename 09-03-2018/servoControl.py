@@ -117,30 +117,50 @@ def elbow(quadrant):
 		pwm.set_pwm(pin,0,i)
 		time.sleep(0.01)
 
+def flap(direction):
+	center=275
+	left=100
+	right=450
+	pin=0
+	if direction=='l':
+		for i in range(center,left,-1):
+			pwm.set_pwm(pin,0,i)
+			time.sleep(0.01)
+		time.sleep(2)
+		for i in range(left,center,1):
+			pwm.set_pwm(pin,0,i)
+			time.sleep(0.01)
+	elif direction=='r':
+		for i in range(center,right,-1):
+			pwm.set_pwm(pin,0,i)
+			time.sleep(0.01)
+		time.sleep(2)
+		for i in range(right,center,1):
+			pwm.set_pwm(pin,0,i)
+			time.sleep(0.01)
 
 def quadrant1():
 	shoulder_lf()
 	elbow('1')
 	time.sleep(2)
 	wrist()
+	time.sleep(2)
+	flap('l')
 
 def quadrant2():
 	shoulder_rf()
 	elbow('2')
 	time.sleep(2)
 	wrist()
+	time.sleep(2)
+	flap('l')
 
 def quadrant12():
 	elbow()
 	time.sleep(2)
 	wrist()
+	time.sleep(2)
+	flap('l')
 
 
-def flap(direction):
-	if direction=="l":
-		pass
-	elif direction=="r":
-		pass
 
-#finger_close()
-quadrant2()
