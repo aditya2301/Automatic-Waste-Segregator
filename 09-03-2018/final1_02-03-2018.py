@@ -240,8 +240,8 @@ def imageSubtract(img):
 
 
 def  imageProcessing():
-    x=422
-    y=512
+    x=440
+    y=252
     vertical=int(x/2)
     horizontal=int(y/2)
     
@@ -276,7 +276,7 @@ def  imageProcessing():
                continue
             os.system("clear")
             refImg=frame.array
-            refImg=refImg[0:512,0:512-90]
+            refImg=refImg[260:512,50:490]
             refThresh=imageSubtract(refImg)
             first_time=1
             frame_buffer=0
@@ -285,7 +285,7 @@ def  imageProcessing():
         frame_buffer+=1
         
         image = frame.array
-        image=image[0:512,0:512-90]
+        image=image[260:512,50:490]
         cv2.imshow("Foreground", image)
         key = cv2.waitKey(1)
         rawCapture.truncate(0)
