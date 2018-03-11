@@ -15,8 +15,8 @@ MotorPin1   = 11    # pin11
 MotorPin2   = 12    # pin12
 MotorEnable1 = 13    # pin13
 
-MotorPin3   = 15    # pin11
-MotorPin4   = 16    # pin12
+MotorPin3   = 16    # pin11
+MotorPin4   = 15    # pin12
 MotorEnable2 = 18
 
 Motor_speed_f=37#34
@@ -212,7 +212,7 @@ def autonomous():
                                   while stop_flag==1:
                                     continue
                                   print("Resumed the vehicle")
-                                  forward()
+                                  backward()
                                   end=time.time()+remaining_time
                                 continue
                         #stop()
@@ -229,7 +229,7 @@ def autonomous():
                                   while stop_flag==1:
                                     continue
                                   print("Resumed the vehicle")
-                                  forward()
+                                  left()
                                   end=time.time()+remaining_time
                                 continue
                         #stop()
@@ -246,7 +246,7 @@ def autonomous():
                                   while stop_flag==1:
                                     continue
                                   print("Resumed the vehicle")
-                                  forward()
+                                  right()
                                   end=time.time()+remaining_time
                                 continue
         stop()

@@ -148,8 +148,8 @@ def elbow(quadrant):
 
 def flap(direction):
 	center=300
-	left=100
-	right=450
+	left=60
+	right=500
 	pin=0
 	if direction=='l':
 		for i in range(center,left,-1):
