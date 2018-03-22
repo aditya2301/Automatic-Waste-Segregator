@@ -3,7 +3,7 @@ from picamera import PiCamera
 from picamera.array import PiRGBArray
 import cv2,os,socket,sys
 import numpy as np
-import threading
+from multiprocessing import Process
 import RPi.GPIO as GPIO
 import time,os,sys
 import bluetooth
@@ -194,88 +194,41 @@ def loop():
                         #GPIO.cleanup()
                         #sys.exit()
 def autonomous():
-        current_time=time.time()+3
-        while time.time()<=current_time:
-            continue  # This is to give 15 seconds warm up time for the Image processing module.
+	current_time=time.time()+3
+	while time.time()<=current_time:
+		continue  # This is to give 15 seconds warm up time for the Image processing module.
+	with open("Database.txt","r") as f:
+		data=f.readlines()
+	for i in range(0,len(data)):
+		data[i]=data[i].rstrip("\n")
 
-        with open("Database.txt","r") as f:
-                data=f.readlines()
-        for i in range(0,len(data)):
-        	    data[i]=data[i].rstrip("\n")
+	for row in data:
+		#row=row.rstrip("\n")
+		direction,duration=row.split()
+		if direction=="forward":
+			forward()
+			flag=0
+			end=time.time()+float(duration)
+			while (end>=time.time()):
+				with open("temp.txt","r") as f:
+					stop_flag=f.read()
+					if stop_flag==str(1) and flag==0:
+						stop()
+						flag=1
+						remaining_time=end-time.time()
+						print("Stopped the vehicle")
+					elif stop_flag==str(0) and flag==1:
+						flag=0
+						print("Resumed the vehicle")
+						forward()
+						end=time.time()+remaining_time
+				continue
 
-        for row in data:
-                #row=row.rstrip("\n")
-                direction,duration=row.split()
-                if direction=="forward":
-                        forward()
-                        end=time.time()+float(duration)
-                        while (end>=time.time()):
-                                global stop_flag
-                                if stop_flag==1:
-                                  stop()
-                                  remaining_time=end-time.time()
-                                  print("Stopped the vehicle")
-                                  global stop
-                                  while stop_flag==1:
-                                    continue
-                                  print("Resumed the vehicle")
-                                  forward()
-                                  end=time.time()+remaining_time
-                                continue
-                elif direction=="backward":
-                        backward()
-                        end=time.time()+float(duration)
-                        while (end>=time.time()):
-                                global stop_flag
-                                if stop_flag==1:
-                                  stop()
-                                  remaining_time=end-time.time()
-                                  print("Stopped the vehicle")
-                                  global stop_flag
-                                  while stop_flag==1:
-                                    continue
-                                  print("Resumed the vehicle")
-                                  backward()
-                                  end=time.time()+remaining_time
-                                continue
-                        #stop()
-                elif direction=="left":
-                        left()
-                        end=time.time()+float(duration)
-                        while (end>=time.time()):
-                                global stop_flag
-                                if stop_flag==1:
-                                  stop()
-                                  remaining_time=end-time.time()
-                                  print("Stopped the vehicle")
-                                  global stop_flag
-                                  while stop_flag==1:
-                                    continue
-                                  print("Resumed the vehicle")
-                                  left()
-                                  end=time.time()+remaining_time
-                                continue
-                        #stop()
-                elif direction=="right":
-                        right()
-                        end=time.time()+float(duration)
-                        while (end>=time.time()):
-                                global stop_flag
-                                if stop_flag==1:
-                                  stop()
-                                  remaining_time=end-time.time()
-                                  print("Stopped the vehicle")
-                                  global stop_flag
-                                  while stop_flag==1:
-                                    continue
-                                  print("Resumed the vehicle")
-                                  right()
-                                  end=time.time()+remaining_time
-                                continue
-        stop()
-        print("Base movement finished")
-        global base_off
-        base_off=1
+              
+	stop()
+	print("Base movement finished")
+	global base_off
+	base_off=1
                 
                   
 
@@ -357,8 +310,8 @@ def  imageProcessing():
                 counter=1
                 continue
             else:
-                global stop_flag
-                stop_flag=1
+                with open("temp.txt","w") as f:
+                   f.write(str(1))
                 os.system("clear")
                 M=cv2.moments(c)
                 cX = int(M['m10']/M['m00'])
@@ -396,8 +349,8 @@ def  imageProcessing():
                 counter=0
 
            else:
-            global stop_flag
-            stop_flag=0
+            with open("temp.txt","w") as f:
+               f.write(str(0))
 
            cv2.imshow("Threshold",thresholded)
            #directionFlag=identification(image)
@@ -425,8 +378,8 @@ if __name__ == "__main__" :
                 choice=input("Enter-  1. Plan path . 2. Autonomous movement\n")
                 if choice == "2":
                         if os.path.exists(os.getcwd()+"/Database.txt")==True:
-                                t1=threading.Thread(target=autonomous)
-                                t2=threading.Thread(target=imageProcessing)
+                                t1=Process(target=autonomous)
+                                t2=Process(target=imageProcessing)
                                 t1.start()
                                 t2.start()
                                 #servoControl.elbow('l')

@@ -1,6 +1,6 @@
 
 import time,Adafruit_PCA9685
-
+import threading
 
 pwm = Adafruit_PCA9685.PCA9685()
 pwm.set_pwm_freq(10)
@@ -167,6 +167,8 @@ def flap(direction):
 		for i in range(right,center,-1):
 			pwm.set_pwm(pin,0,i)
 			#time.sleep(0.01)
+
+
 
 def quadrant1(binDir):
 	print("\n Operating shoulder..")
