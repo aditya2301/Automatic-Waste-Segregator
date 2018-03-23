@@ -3,7 +3,7 @@ import time,Adafruit_PCA9685
 
 
 pwm = Adafruit_PCA9685.PCA9685()
-pwm.set_pwm_freq(10)
+pwm.set_pwm_freq(50)
 
 def finger_open():
 	expand=460
