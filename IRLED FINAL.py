@@ -23,6 +23,6 @@ while True:
 		client.api.account.messages.create(
 			to="+918147661833",
 			from_="+18043125524",
-			 body=x)
+			 body=mess)
 		print("message sent")
 		break
