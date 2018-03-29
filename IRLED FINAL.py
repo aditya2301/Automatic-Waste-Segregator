@@ -1,4 +1,5 @@
 import RPi.GPIO as IO
+import os
 import time
 from twilio.rest import Client
 IO.setmode(IO.BCM)
@@ -24,5 +25,5 @@ while True:
 			to="+918147661833",
 			from_="+18043125524",
 			 body=mess)
-		print("message sent")
+		os.echo("message sent")
 		break
