@@ -122,7 +122,7 @@ def clientResponse(img,address):
 		if count==slab:
 		    counter+=1
 		    sys.stdout.write('\r')
-		    sys.stdout.write('['+"#"*counter+" "*(10-counter)+']'+" "+str(counter*10)+"%")
+		    sys.stdout.write('['+"###"*counter+" "*(10-counter)+']'+" "+str(counter*10)+"%")
 		    sys.stdout.flush()
 		    count=0
 	sys.stdout.write("\n")
