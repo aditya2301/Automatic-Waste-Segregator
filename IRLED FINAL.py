@@ -25,5 +25,5 @@ while True:
 			to="+918147661833",
 			from_="+18043125524",
 			 body=mess)
-		os.echo("message sent")
+		print("message sent")
 		break
