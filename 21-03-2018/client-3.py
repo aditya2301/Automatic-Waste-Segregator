@@ -90,12 +90,12 @@ def destroy():
         stop()
         GPIO.cleanup() 
 
-def clientResponse(img,address):
+def clientResponse(img):
 	#os.system("clear")
 	cv2.imwrite("newimg.jpg",img)
 	s = socket.socket()         
 	port = 60000              
-	s.connect((address, port))
+	s.connect(("192.168.2.8", port))
 	print("Established connection.")
 	f=open("newimg.jpg","rb")
 	data=f.read()
@@ -269,7 +269,7 @@ def imageSubtract(img):
     return v
 
 
-def  imageProcessing(stop_flag,base_off,IP_addr):
+def  imageProcessing(stop_flag,base_off):
     x=440
     y=252
     vertical=int(x/2)
@@ -351,7 +351,7 @@ def  imageProcessing(stop_flag,base_off,IP_addr):
                 print("Object is located at = ",end="")
                 if  cX<vertical:
                     print("Object located in 1st Quadrant")
-                    binDir=clientResponse(image,IP_addr.value)
+                    binDir=clientResponse(image)
                     servoControl.quadrant2(binDir)#ulta for us
                     first_time=0
                     frame_buffer=0
@@ -402,11 +402,11 @@ if __name__ == "__main__" :
                 choice=input("Enter-  1. Plan path . 2. Autonomous movement\n")
                 if choice == "2":
                         if os.path.exists(os.getcwd()+"/Database.txt")==True:
-                                IP_addr=input("Enter the server's IP address:\n")
+                                #IP_addr=input("Enter the server's IP address:\n")
                                 stop_flag=Value('i',0)
                                 base_off=Value('i',0)
                                 t1=Process(target=autonomous,args=(stop_flag,base_off,))
-                                t2=Process(target=imageProcessing,args=(stop_flag,base_off,IP_addr,))
+                                t2=Process(target=imageProcessing,args=(stop_flag,base_off,))
                                 t1.start()
                                 t2.start()
                                 print("Started both the threads succesfully !")
