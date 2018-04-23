@@ -69,8 +69,8 @@ while True:
       break
       
    except Exception as e:
-   	if type(e).__name__=="EOFError":
-   		sys.exit()
+    if type(e).__name__=="EOFError":
+      sys.exit()
    	print(e)
    	c.close()
    	continue
