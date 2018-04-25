@@ -40,26 +40,27 @@ def binStatus():
 
 def flap(direction):
     print("Operating flap..")
-    center=260
-    left=60
-    right=500
+    center=185
+    left=90
+    right=320
     pin=0
     if direction=='l':
         for i in range(center,left,-1):
             pwm.set_pwm(pin,0,i)
-            #time.sleep(0.01)
+            time.sleep(0.01)
         time.sleep(2)
         for i in range(left,center,1):
             pwm.set_pwm(pin,0,i)
             #time.sleep(0.01)
     elif direction=='r':
-        center=350
+        center=170
         for i in range(center,right,1):
             pwm.set_pwm(pin,0,i)
-            #time.sleep(0.01)
+            time.sleep(0.01)
         time.sleep(2)
         for i in range(right,center,-1):
             pwm.set_pwm(pin,0,i)
+            time.sleep(0.01)
 
 
 def clientResponse(img):
@@ -69,7 +70,7 @@ def clientResponse(img):
     #extractForegroundImage(filename)
     s = socket.socket()         
     port = 60000              
-    s.connect(("192.168.2.8", port))
+    s.connect(("192.168.43.36", port))
     print("Established connection.")
     f=open(filename,"rb")
     data=f.read()
@@ -181,10 +182,10 @@ def  imageProcessing():
             new_image = cv2.drawContours(mask,[c],0,255,-1,)
             cv2.imshow("new",new_image)
             cv2.imshow("threshold",thresholded)
-            if cv2.contourArea(c)>300 and len(contours)<=3:
+            if cv2.contourArea(c)>500 and len(contours)<=2:
                 if counter==0:
                     print("Possible object detcted ! Going to sleep for 2 seconds")
-                    time.sleep(2)
+                    time.sleep(3)
                     counter=1
                     continue
                 else:
@@ -195,7 +196,7 @@ def  imageProcessing():
                     print("Total contours found=",len(contours))
                     print("Object detected with area = ",cv2.contourArea(c))
 
-                    binDir=clientResponse(iamge)
+                    binDir=clientResponse(image)
                     flap(binDir) # call the flap function
                     first_time=0
                     frame_buffer=0

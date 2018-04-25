@@ -58,7 +58,7 @@ while True:
             data=c.recv(1)
             f.write(data)
 
-      extractForegroundImage(directory,name)
+      #extractForegroundImage(directory,name)
       value=identification(os.path.join("static",directory,name))
       c.send(bytes(value,"utf-8"))
       c.close()
