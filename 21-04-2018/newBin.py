@@ -1,6 +1,6 @@
 from picamera import PiCamera
 from picamera.array import PiRGBArray
-import cv2,os,socket,sys,time
+import cv2,os,socket,sys,time,Adafruit_PCA9685
 import numpy as np
 from twilio.rest import Client
 
@@ -216,7 +216,8 @@ def  imageProcessing():
 
 if __name__ == "__main__" :
     try:
-
+        pwm = Adafruit_PCA9685.PCA9685()
+        pwm.set_pwm_freq(50)
         imageProcessing()
         print("Started the system !")
                        
