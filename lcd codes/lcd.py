@@ -1,5 +1,5 @@
 import RPi.GPIO as GPIO
-from time import sleep
+import time
  
 # Define GPIO to LCD mapping
 LCD_RS = 7
@@ -35,15 +35,19 @@ def main():
   # Initialise display
   lcd_init()
  
+  
  
 def lcd_init():
-  lcd_display(0x28,LCD_CMD) # Selecting 4 - bit mode with two rows
-  lcd_display(0x0C,LCD_CMD) # Display On,Cursor Off, Blink Off
-  lcd_display(0x01,LCD_CMD) # Clear display
-
-  sleep(E_DELAY)
+  # Initialise display
+  lcd_byte(0x33,LCD_CMD) # 110011 Initialise
+  lcd_byte(0x32,LCD_CMD) # 110010 Initialise
+  lcd_byte(0x06,LCD_CMD) # 000110 Cursor move direction
+  lcd_byte(0x0C,LCD_CMD) # 001100 Display On,Cursor Off, Blink Off
+  lcd_byte(0x28,LCD_CMD) # 101000 Data length, number of lines, font size
+  lcd_byte(0x01,LCD_CMD) # 000001 Clear display
+  time.sleep(E_DELAY)
  
-def lcd_display(bits, mode):
+def lcd_byte(bits, mode):
   # Send byte to data pins
   # bits = data
   # mode = True  for character
@@ -98,16 +102,18 @@ def lcd_string(message,line):
  
   message = message.ljust(LCD_WIDTH," ")
  
-  lcd_display(line, LCD_CMD)
+  lcd_byte(line, LCD_CMD)
  
   for i in range(LCD_WIDTH):
-    lcd_display(ord(message[i]),LCD_CHR)
+    lcd_byte(ord(message[i]),LCD_CHR)
  
 if __name__ == '__main__':
+ 
   try:
     main()
   except KeyboardInterrupt:
     pass
-  '''finally:
-    lcd_display(0x01, LCD_CMD)'''
-#GPIO.cleanup()
+  finally:
+    lcd_byte(0x01, LCD_CMD)
+    lcd_string("Goodbye!",LCD_LINE_1)
+    GPIO.cleanup()
