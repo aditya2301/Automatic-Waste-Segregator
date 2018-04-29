@@ -91,11 +91,13 @@ def identification(file_name):
 
   #print('\nEvaluation time (1-image): {:.3f}s\n'.format(end-start))
 
+  output_result={'bio':results[0],'nonbio':results[1]}
+  return(output_result)
 
-  if results[0]>results[1]:
+  '''if results[0]>results[1]:
     print(str(labels[0])+" "+str(results[0]))
     return("l")
   print(str(labels[1])+" "+str(results[1]))
-  return("r")
+  return("r")'''
 
 

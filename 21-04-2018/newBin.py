@@ -3,6 +3,7 @@ from picamera.array import PiRGBArray
 import cv2,os,socket,sys,time,Adafruit_PCA9685
 import numpy as np
 from twilio.rest import Client
+import RPi.GPIO as GPIO
 
 
 def sendSMS(msg):
@@ -14,15 +15,8 @@ def sendSMS(msg):
 
 
 def binStatus():
-
-    GPIO.setwarnings(False)
-    GPIO.setmode(GPIO.BOARD)
-    GPIO.setup(16,GPIO.IN) #GPIO 16 bio degradable 
-    GPIO.setup(18,GPIO.IN) #GPIO 18 non bio degradable bin
-    
-    
     bio = GPIO.input(16)
-    nonbio= button_state = GPIO.input(18)
+    nonbio = button_state = GPIO.input(18)
     if bio != False : #object is near   
         time.sleep(2)
         if bio!=False :
@@ -43,7 +37,7 @@ def flap(direction):
     center=185
     left=90
     right=320
-    pin=0
+    pin=0 # servo motor is connect to pin 0 of the PCA driver
     if direction=='l':
         for i in range(center,left,-1):
             pwm.set_pwm(pin,0,i)
@@ -63,24 +57,24 @@ def flap(direction):
             time.sleep(0.01)
 
 
-def clientResponse(img):
+def clientResponse(img,IP_addr):
     #os.system("clear")
     filename="newimg.jpg"
     cv2.imwrite(filename,img)
     #extractForegroundImage(filename)
     s = socket.socket()         
     port = 60000              
-    s.connect(("192.168.43.36", port))
+    s.connect((IP_addr, port))
     print("Established connection.")
     f=open(filename,"rb")
     data=f.read()
     f.close()
-    print("\nSending Length information..")
+    print("\nSending File length information..")
     length=str(len(data))
     s.send(bytes(length,"utf-8"))
     
     status=s.recv(2)
-    print("Length Reception Acknowledgement - "+str(status.decode("utf-8")))
+    print("File length information acknowledgement - "+str(status.decode("utf-8")))
     print("Sending the image to Google Cloud for Tensorflow processing. . .")
     f=open(filename,"rb")
     data=f.read(1)
@@ -112,19 +106,16 @@ def clientResponse(img):
     elif str(binFlag.decode("utf-8"))=="r":
         print("Object is non-biodegradable. Rotating bin on the right side.")
     s.close()
-    os.system("clear")
+    #os.system("clear")
     return binFlag.decode("utf-8")
 
 
-
-
 def imageSubtract(img):
-    hsv=cv2.cvtColor(img,cv2.COLOR_BGR2YUV)
+    hsv=cv2.cvtColor(img,cv2.COLOR_BGR2HSV)
     return hsv
 
-def  imageProcessing():
-
-
+def  imageProcessing(IP_addr):
+    print("Started the system !")
     camera = PiCamera()
     camera.resolution = (512,512)
     #camera.zoom=(0.0,0.0,0.4,0.5)
@@ -155,7 +146,7 @@ def  imageProcessing():
             first_time=1
             frame_buffer=0
 
-        frame_buffer+=1
+        
 
         image = frame.array
         
@@ -196,13 +187,15 @@ def  imageProcessing():
                     print("Total contours found=",len(contours))
                     print("Object detected with area = ",cv2.contourArea(c))
 
-                    binDir=clientResponse(image)
+                    binDir=clientResponse(image,IP_addr)
                     flap(binDir) # call the flap function
+                    time.sleep(2)
+                    binStatus()
                     first_time=0
                     frame_buffer=0
                     counter=0
                     print("Waste segregated !")
-                    continue
+                    
             
         except Exception as e:
             print(e)
@@ -217,10 +210,15 @@ def  imageProcessing():
 
 if __name__ == "__main__" :
     try:
+        GPIO.setwarnings(False)
+        GPIO.setmode(GPIO.BOARD)
+        GPIO.setup(16,GPIO.IN) #GPIO 16 bio degradable 
+        GPIO.setup(18,GPIO.IN) #GPIO 18 non bio degradable bin
         pwm = Adafruit_PCA9685.PCA9685()
         pwm.set_pwm_freq(50)
-        imageProcessing()
-        print("Started the system !")
+        IP_addr=input("Enter the IP address of the server : ")
+        imageProcessing(IP_addr)
+        GPIO.cleanup()
                        
     except KeyboardInterrupt:  # When 'Ctrl+C' is pressed, the child program destroy() will be  executed.
         GPIO.cleanup() 
