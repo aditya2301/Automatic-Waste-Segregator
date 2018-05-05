@@ -24,11 +24,7 @@ def sendSMS(msg):
 
 
 def binStatus():
-    GPIO.setwarnings(False)
-    GPIO.setmode(GPIO.BOARD)
-    GPIO.setup(16,GPIO.IN) #GPIO 16 bio degradable 
-    GPIO.setup(18,GPIO.IN) #GPIO 18 non bio degradable bin
-    
+
     
     bio = GPIO.input(16)
     nonbio= GPIO.input(18)
@@ -134,7 +130,7 @@ def clientResponse(img,Ip_addr):
 
 
 def imageSubtract(img):
-    hsv=cv2.cvtColor(img,cv2.COLOR_BGR2YUV)
+    hsv=cv2.cvtColor(img,cv2.COLOR_BGR2HSV)
     return hsv
 
 def  imageProcessing(Ip_addr):
@@ -223,6 +219,7 @@ def  imageProcessing(Ip_addr):
                     counter=0
                     print("Waste segregated !")
                     time.sleep(2)
+                    binStatus()
                     continue
                 default_lcd_msg()
             
@@ -239,6 +236,11 @@ def  imageProcessing(Ip_addr):
 
 if __name__ == "__main__" :
     try:
+      GPIO.setwarnings(False)
+      GPIO.setmode(GPIO.BOARD)
+      GPIO.setup(16,GPIO.IN) #GPIO 16 bio degradable 
+      GPIO.setup(18,GPIO.IN) #GPIO 18 non bio degradable bin
+    
         pwm = Adafruit_PCA9685.PCA9685()
         pwm.set_pwm_freq(50)
         print("Started the system !")
