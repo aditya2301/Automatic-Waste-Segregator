@@ -3,6 +3,7 @@ from picamera.array import PiRGBArray
 import cv2,os,socket,sys,time,Adafruit_PCA9685
 import numpy as np
 from twilio.rest import Client
+import RPi.GPIO as GPIO
 
 import lcd
 LCD_LINE_1 = 0x80 # LCD RAM address for the 1st line
@@ -26,24 +27,26 @@ def sendSMS(msg):
 def binStatus():
 
     
-    bio = GPIO.input(16)
-    nonbio= GPIO.input(18)
-    if bio != False : #object is near   
-        time.sleep(2)
-        if bio!=False :
+    bio = GPIO.input(37)
+    nonbio= GPIO.input(38)
+    if  GPIO.input(37) != False : #object is near   
+        time.sleep(4)
+        if  GPIO.input(37) != False :
             msg="Biodegradable bin is full. Please REPLACE."
             lcd.lcd_string("Alert!!!",LCD_LINE_1)
             lcd.lcd_string("Bio bin full",LCD_LINE_2)
             sendSMS(msg)
+            print(msg)
             time.sleep(2)
     
-    if nonbio != False : #object is near  
-        time.sleep(2)
-        if nonbio!=False :
+    if  GPIO.input(38) != False : #object is near  
+        time.sleep(4)
+        if  GPIO.input(38) !=False :
             msg="Non-biodegradable bin is full. Please REPLACE."
             lcd.lcd_string("Alert!!!",LCD_LINE_1)
             lcd.lcd_string("Non-Bio bin full",LCD_LINE_2)
             sendSMS(msg)
+            print(msg)
             time.sleep(2)
 
     print("Bin status is updated !")
@@ -63,7 +66,7 @@ def flap(direction):
         time.sleep(2)
         for i in range(left,center,1):
             pwm.set_pwm(pin,0,i)
-            #time.sleep(0.01)
+            time.sleep(0.01)
     elif direction=='r':
         center=170
         for i in range(center,right,1):
@@ -157,7 +160,7 @@ def  imageProcessing(Ip_addr):
                 print("Frame rejected -",str(frame_buffer))
                 frame_buffer+=1
                 continue
-            os.system("clear")
+            #os.system("clear")
             refImg=frame.array
             #refImg=refImg[260:512,50:490]
             refThresh=imageSubtract(refImg)
@@ -180,7 +183,7 @@ def  imageProcessing(Ip_addr):
         kernel = np.ones((5,5),np.uint8)
         diff = cv2.morphologyEx(diff, cv2.MORPH_OPEN, kernel)
         diff=cv2.erode(diff,kernel,iterations = 2)
-        diff=cv2.dilate(diff,kernel,iterations = 4)
+        diff=cv2.dilate(diff,kernel,iterations = 6)
 
         _, thresholded = cv2.threshold(diff, 0 , 255, cv2.THRESH_BINARY +cv2.THRESH_OTSU)
         _, contours, _= cv2.findContours(thresholded,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
@@ -191,7 +194,9 @@ def  imageProcessing(Ip_addr):
             new_image = cv2.drawContours(mask,[c],0,255,-1,)
             cv2.imshow("new",new_image)
             cv2.imshow("threshold",thresholded)
-            if cv2.contourArea(c)>500 and len(contours)<=2:
+            print("Area ",str(cv2.contourArea(c)))
+            print("Total contours ",str(len(contours)))
+            if cv2.contourArea(c)>500 and len(contours)<=10:
                 if counter==0:
                     print("Possible object detcted ! Going to sleep for 3 seconds")
                     time.sleep(3)
@@ -236,10 +241,10 @@ def  imageProcessing(Ip_addr):
 
 if __name__ == "__main__" :
     try:
-      GPIO.setwarnings(False)
-      GPIO.setmode(GPIO.BOARD)
-      GPIO.setup(16,GPIO.IN) #GPIO 16 bio degradable 
-      GPIO.setup(18,GPIO.IN) #GPIO 18 non bio degradable bin
+        GPIO.setwarnings(False)
+        GPIO.setmode(GPIO.BOARD)
+        GPIO.setup(37,GPIO.IN) #GPIO 16 bio degradable 
+        GPIO.setup(38,GPIO.IN) #GPIO 18 non bio degradable bin
     
         pwm = Adafruit_PCA9685.PCA9685()
         pwm.set_pwm_freq(50)
@@ -252,3 +257,5 @@ if __name__ == "__main__" :
          
     except KeyboardInterrupt:  # When 'Ctrl+C' is pressed, the child program destroy() will be  executed.
         GPIO.cleanup() 
+    except Exception as e:
+        print(e)
