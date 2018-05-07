@@ -30,7 +30,7 @@ def binStatus():
     bio = GPIO.input(37)
     nonbio= GPIO.input(38)
     if  GPIO.input(37) != False : #object is near   
-        time.sleep(4)
+        time.sleep(2)
         if  GPIO.input(37) != False :
             msg="Biodegradable bin is full. Please REPLACE."
             lcd.lcd_string("Alert!!!",LCD_LINE_1)
@@ -40,7 +40,7 @@ def binStatus():
             time.sleep(2)
     
     if  GPIO.input(38) != False : #object is near  
-        time.sleep(4)
+        time.sleep(2)
         if  GPIO.input(38) !=False :
             msg="Non-biodegradable bin is full. Please REPLACE."
             lcd.lcd_string("Alert!!!",LCD_LINE_1)
@@ -56,15 +56,15 @@ def binStatus():
 def flap(direction):
     print("Operating flap..")
     center=185
-    left=90
-    right=320
+    left=80
+    right=340
     pin=0
     if direction=='l':
         for i in range(center,left,-1):
             pwm.set_pwm(pin,0,i)
             time.sleep(0.01)
         time.sleep(2)
-        for i in range(left,center,1):
+        for i in range(left,215,1):
             pwm.set_pwm(pin,0,i)
             time.sleep(0.01)
     elif direction=='r':
@@ -156,13 +156,13 @@ def  imageProcessing(Ip_addr):
     for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
         if first_time==0:
             rawCapture.truncate(0)
-            if frame_buffer<10:
+            if frame_buffer<30:
                 print("Frame rejected -",str(frame_buffer))
                 frame_buffer+=1
                 continue
             #os.system("clear")
             refImg=frame.array
-            #refImg=refImg[260:512,50:490]
+            refImg=refImg[40:490,25:]
             refThresh=imageSubtract(refImg)
             first_time=1
             frame_buffer=0
@@ -170,7 +170,7 @@ def  imageProcessing(Ip_addr):
         frame_buffer+=1
 
         image = frame.array
-        
+        image=image[40:490,25:]
         rawCapture.truncate(0)
         newThresh=imageSubtract(image)
         cv2.imshow("Foreground", newThresh)
@@ -194,9 +194,9 @@ def  imageProcessing(Ip_addr):
             new_image = cv2.drawContours(mask,[c],0,255,-1,)
             cv2.imshow("new",new_image)
             cv2.imshow("threshold",thresholded)
-            print("Area ",str(cv2.contourArea(c)))
-            print("Total contours ",str(len(contours)))
-            if cv2.contourArea(c)>500 and len(contours)<=10:
+            #print("Area ",str(cv2.contourArea(c)))
+            #print("Total contours ",str(len(contours)))
+            if cv2.contourArea(c)>500 and len(contours)<=4:
                 if counter==0:
                     print("Possible object detcted ! Going to sleep for 3 seconds")
                     time.sleep(3)
