@@ -12,7 +12,7 @@ LCD_LINE_2 = 0xC0 # LCD RAM address for the 2nd line
 
 def default_lcd_msg():
     lcd.lcd_string("Automatic Waste",LCD_LINE_1)
-    lcd.lcd_string("Segregation",LCD_LINE_2)
+    lcd.lcd_string("Segregator",LCD_LINE_2)
     time.sleep(2)
 
       
@@ -215,8 +215,10 @@ def  imageProcessing(Ip_addr):
                     binDir=clientResponse(image,Ip_addr)
                     lcd.lcd_string("Waste Detected:-",LCD_LINE_1)
                     if binDir=='l':
+                        print("Waste is Biodegradable")
                         lcd.lcd_string("Biodegradable",LCD_LINE_2)
                     elif binDir=='r':
+                        print("Waste is Non-biodegradable")
                         lcd.lcd_string("Non-Bio",LCD_LINE_2)
                     flap(binDir) # call the flap function
                     first_time=0
@@ -251,7 +253,8 @@ if __name__ == "__main__" :
         print("Started the system !")
         lcd.main()
         default_lcd_msg()
-        Ip_addr = input("Enter server's IP address for connection: ")
+        #Ip_addr = input("Enter server's IP address for connection: ")
+        Ip_addr = "192.168.43.36"
         imageProcessing(Ip_addr)
         
          
