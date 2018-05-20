@@ -5,7 +5,7 @@ import numpy as np
 from twilio.rest import Client
 import RPi.GPIO as GPIO
 
-import lcd
+import lcdsetup
 LCD_LINE_1 = 0x80 # LCD RAM address for the 1st line
 LCD_LINE_2 = 0xC0 # LCD RAM address for the 2nd line
 
