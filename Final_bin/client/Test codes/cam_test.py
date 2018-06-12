@@ -52,17 +52,17 @@ def  imageProcessing():
                 continue
             #os.system("clear")
             refImg=frame.array
-            refImg=refImg[40:490,25:]
-            refThresh=imageSubtract(refImg)
+            refThresh=refImg[40:490,25:]
+            #refThresh=imageSubtract(refImg)
             first_time=1
             frame_buffer=0
 
         frame_buffer+=1
 
         image = frame.array
-        image=image[40:490,25:]
+        newThresh=image[40:490,25:]
         rawCapture.truncate(0)
-        newThresh=imageSubtract(image)
+        #newThresh=imageSubtract(image)
         cv2.imshow("Foreground", newThresh)
         cv2.imshow("Background", refThresh)
         key = cv2.waitKey(1)

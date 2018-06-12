@@ -5,7 +5,7 @@ import numpy as np
 from twilio.rest import Client
 import RPi.GPIO as GPIO
 
-import lcdsetup
+import lcdsetup as lcd
 LCD_LINE_1 = 0x80 # LCD RAM address for the 1st line
 LCD_LINE_2 = 0xC0 # LCD RAM address for the 2nd line
 
@@ -183,7 +183,7 @@ def  imageProcessing(Ip_addr):
         kernel = np.ones((5,5),np.uint8)
         diff = cv2.morphologyEx(diff, cv2.MORPH_OPEN, kernel)
         diff=cv2.erode(diff,kernel,iterations = 2)
-        diff=cv2.dilate(diff,kernel,iterations = 6)
+        diff=cv2.dilate(diff,kernel,iterations = 3)
 
         _, thresholded = cv2.threshold(diff, 0 , 255, cv2.THRESH_BINARY +cv2.THRESH_OTSU)
         _, contours, _= cv2.findContours(thresholded,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
@@ -196,7 +196,7 @@ def  imageProcessing(Ip_addr):
             cv2.imshow("threshold",thresholded)
             #print("Area ",str(cv2.contourArea(c)))
             #print("Total contours ",str(len(contours)))
-            if cv2.contourArea(c)>500 and len(contours)<=4:
+            if cv2.contourArea(c)>1000 and len(contours)<=4:
                 if counter==0:
                     print("Possible object detcted ! Going to sleep for 3 seconds")
                     time.sleep(3)
