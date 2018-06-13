@@ -1,13 +1,9 @@
-from time import sleep
 from picamera import PiCamera
 from picamera.array import PiRGBArray
-import cv2,os
+import cv2,os,socket,sys,time,bluetooth
 import numpy as np
-import threading
+from multiprocessing import Process,Value
 import RPi.GPIO as GPIO
-import time,os,sys
-import bluetooth
-from label_image import identification
 import servoControl
 
 port = 1
@@ -15,17 +11,15 @@ MotorPin1   = 11    # pin11
 MotorPin2   = 12    # pin12
 MotorEnable1 = 13    # pin13
 
-MotorPin3   = 15    # pin11
-MotorPin4   = 16    # pin12
+MotorPin3   = 16    # pin11
+MotorPin4   = 15    # pin12
 MotorEnable2 = 18
 
-Motor_speed_f=41#34
-Motor_speed_b=41#30
-Motor_speed_r=41#37
-Motor_speed_l=41#37
+Motor_speed_f=50#41#34
+Motor_speed_b=50#41#30
+Motor_speed_r=50#41#37
+Motor_speed_l=50#41#37
 
-stop_flag=0
-base_off=0
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD)          # Numbers GPIOs by physical location
@@ -96,6 +90,57 @@ def destroy():
         stop()
         GPIO.cleanup() 
 
+def clientResponse(img):
+	#os.system("clear")
+	cv2.imwrite("newimg.jpg",img)
+	s = socket.socket()         
+	port = 60000              
+	s.connect(("192.168.2.8", port))
+	print("Established connection.")
+	f=open("newimg.jpg","rb")
+	data=f.read()
+	f.close()
+	print("\nSending Length information..")
+	length=str(len(data))
+	s.send(bytes(length,"utf-8"))
+	
+	status=s.recv(2)
+	print("Length Reception Acknowledgement - "+str(status.decode("utf-8")))
+	print("Sending the image to server for Tensorflow processing. . .")
+	f=open("newimg.jpg","rb")
+	data=f.read(1)
+	# Progress bar to indicate status of sending the image.
+	length=int(length)
+	count=0
+	counter=0
+	slab=int(length/10)
+	print("\nProgress-")
+	while data:
+		s.send(data)
+		data=f.read(1)
+		count+=1
+		if count==slab:
+		    counter+=1
+		    sys.stdout.write('\r')
+		    sys.stdout.write('['+"###"*counter+" "*(10-counter)+']'+" "+str(counter*10)+"%")
+		    sys.stdout.flush()
+		    count=0
+	sys.stdout.write("\n")
+	sys.stdout.flush()
+	print("Sent sucessfully!")
+	f.close()
+	
+	binFlag=s.recv(1)
+	print("Server response received.")
+	if str(binFlag.decode("utf-8"))=="l":
+		print("Object is biodegradable. Rotating bin on the left side.")
+	elif str(binFlag.decode("utf-8"))=="r":
+		print("Object is non-biodegradable. Rotating bin on the right side.")
+	s.close()
+	os.system("clear")
+	return binFlag.decode("utf-8")
+
+
 def loop():
         server_socket=bluetooth.BluetoothSocket( bluetooth.RFCOMM )
         server_socket.bind(("",port))
@@ -143,91 +188,76 @@ def loop():
                         destroy()
                         #GPIO.cleanup()
                         #sys.exit()
-def autonomous():
-        current_time=time.time()+3
-        while time.time()<=current_time:
-            continue  # This is to give 15 seconds warm up time for the Image processing module.
+def autonomous(stop_flag,base_off):
+    current_time=time.time()+3
+    while time.time()<=current_time:
+        continue  # This is to give 3 seconds warm up time for the Image processing module.
+    with open("Database.txt","r") as f:
+        data=f.readlines()
+    for i in range(0,len(data)):
+        data[i]=data[i].rstrip("\n")
 
-        #global base_on
-        #base_on=1
-        with open("Database.txt","r") as f:
-                data=f.readlines()
-        for i in range(0,len(data)):
-        	    data[i]=data[i].rstrip("\n")
-
-        for row in data:
-                #row=row.rstrip("\n")
-                direction,duration=row.split()
-                if direction=="forward":
-                        forward()
-                        end=time.time()+float(duration)
-                        while (end>=time.time()):
-                                global stop_flag
-                                if stop_flag==1:
-                                  stop()
-                                  remaining_time=end-time.time()
-                                  print("Stopped the vehicle")
-                                  global stop
-                                  while stop_flag==1:
-                                    continue
-                                  print("Resumed the vehicle")
-                                  forward()
-                                  end=time.time()+remaining_time
-                                continue
-                elif direction=="backward":
-                        backward()
-                        end=time.time()+float(duration)
-                        while (end>=time.time()):
-                                global stop_flag
-                                if stop_flag==1:
-                                  stop()
-                                  remaining_time=end-time.time()
-                                  print("Stopped the vehicle")
-                                  global stop_flag
-                                  while stop_flag==1:
-                                    continue
-                                  print("Resumed the vehicle")
-                                  forward()
-                                  end=time.time()+remaining_time
-                                continue
-                        #stop()
-                elif direction=="left":
-                        left()
-                        end=time.time()+float(duration)
-                        while (end>=time.time()):
-                                global stop_flag
-                                if stop_flag==1:
-                                  stop()
-                                  remaining_time=end-time.time()
-                                  print("Stopped the vehicle")
-                                  global stop_flag
-                                  while stop_flag==1:
-                                    continue
-                                  print("Resumed the vehicle")
-                                  forward()
-                                  end=time.time()+remaining_time
-                                continue
-                        #stop()
-                elif direction=="right":
-                        right()
-                        end=time.time()+float(duration)
-                        while (end>=time.time()):
-                                global stop_flag
-                                if stop_flag==1:
-                                  stop()
-                                  remaining_time=end-time.time()
-                                  print("Stopped the vehicle")
-                                  global stop_flag
-                                  while stop_flag==1:
-                                    continue
-                                  print("Resumed the vehicle")
-                                  forward()
-                                  end=time.time()+remaining_time
-                                continue
-        stop()
-        print("Base movement finished")
-        global base_off
-        base_off=1
+    for row in data:
+        direction,duration=row.split()
+        if direction=="forward":
+            forward()
+            end=time.time()+float(duration)
+            while (end>=time.time()):
+                if stop_flag.value==1:
+                    stop()
+                    remaining_time=end-time.time()
+                    print("Stopped the vehicle")
+                    while stop_flag.value==1:
+                        continue
+                    print("Resumed the vehicle")
+                    forward()
+                    end=time.time()+remaining_time
+                continue
+        if direction=="backward":
+            backward()
+            end=time.time()+float(duration)
+            while (end>=time.time()):
+                if stop_flag.value==1:
+                    stop()
+                    remaining_time=end-time.time()
+                    print("Stopped the vehicle")
+                    while stop_flag.value==1:
+                        continue
+                    print("Resumed the vehicle")
+                    backward()
+                    end=time.time()+remaining_time
+                continue
+        elif direction=="left":
+            left()
+            end=time.time()+float(duration)
+            while (end>=time.time()):
+                if stop_flag.value==1:
+                    stop()
+                    remaining_time=end-time.time()
+                    print("Stopped the vehicle")
+                    while stop_flag.value==1:
+                        continue
+                    print("Resumed the vehicle")
+                    left()
+                    end=time.time()+remaining_time
+                continue
+        elif direction=="right":
+            right()
+            end=time.time()+float(duration)
+            while (end>=time.time()):
+                if stop_flag.value==1:
+                    stop()
+                    remaining_time=end-time.time()
+                    print("Stopped the vehicle")
+                    while stop_flag.value==1:
+                        continue
+                    print("Resumed the vehicle")
+                    right()
+                    end=time.time()+remaining_time
+                continue
+    stop()
+    print("Base movement finished")
+    base_off.value=1
                 
                   
 
@@ -239,9 +269,9 @@ def imageSubtract(img):
     return v
 
 
-def  imageProcessing():
-    x=422
-    y=512
+def  imageProcessing(stop_flag,base_off):
+    x=440
+    y=252
     vertical=int(x/2)
     horizontal=int(y/2)
     
@@ -259,11 +289,8 @@ def  imageProcessing():
     frame_buffer=0
     counter=0
     camera.start_preview()
-    sleep(1)
+    time.sleep(1)
 
-    #global base_on
-    #while base_on==0:
-      #continue
    
 
     for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
@@ -276,7 +303,7 @@ def  imageProcessing():
                continue
             os.system("clear")
             refImg=frame.array
-            refImg=refImg[0:512,0:512-90]
+            refImg=refImg[260:512,50:490]
             refThresh=imageSubtract(refImg)
             first_time=1
             frame_buffer=0
@@ -285,7 +312,7 @@ def  imageProcessing():
         frame_buffer+=1
         
         image = frame.array
-        image=image[0:512,0:512-90]
+        image=image[260:512,50:490]
         cv2.imshow("Foreground", image)
         key = cv2.waitKey(1)
         rawCapture.truncate(0)
@@ -305,15 +332,14 @@ def  imageProcessing():
            x,y,w,h = cv2.boundingRect(c)
            
            cv2.rectangle(thresholded,(x,y),(x+w,y+h),(125,125,125),2)
-           if cv2.contourArea(c)>300 and len(contours)<=5:
+           if cv2.contourArea(c)>300 and len(contours)<=3:
             if counter==0:
                 print("Going to sleep for 0.1 second")
-                time.sleep(1)
+                time.sleep(0.1)
                 counter=1
                 continue
             else:
-                global stop_flag
-                stop_flag=1
+                stop_flag.value=1
                 os.system("clear")
                 M=cv2.moments(c)
                 cX = int(M['m10']/M['m00'])
@@ -324,36 +350,45 @@ def  imageProcessing():
 
                 print("Object is located at = ",end="")
                 if  cX<vertical:
-                    print("1st Quadrant")
-                    #servoControl.quandrant1()
+                    print("Object located in 1st Quadrant")
+                    binDir=clientResponse(image)
+                    servoControl.quadrant2(binDir)#ulta for us
+                    first_time=0
+                    frame_buffer=0
+                    continue
                     #directionFlag=identification(image)
                 elif  cX>vertical:
-                    print("2nd Quadrant")
-                    #servoControl.quadrant2()
+                    print("Object located 2nd Quadrant")
+                    binDir=clientResponse(image,IP_addr.value)
+                    servoControl.quadrant1(binDir)
+                    first_time=0
+                    frame_buffer=0
+                    continue
                     #directionFlag=identification(image)
                 elif cX==vertical:
-                    print("Between 1 and 2nd Quadrant")
-                    #servoControl.quadrant12()
-                    #directionFlag=identification(image)
-                #servoControl.flap(directionFlag)
+                    print(" Object located between 1 and 2nd Quadrant")
+                    binDir=clientResponse(iamge,IP_addr.value)
+                    servoControl.quadrant12(binDir)
+                    first_time=0
+                    frame_buffer=0
+                    continue
                 counter=0
 
            else:
-            global stop_flag
-            stop_flag=0
+            stop_flag.value=1
 
            cv2.imshow("Threshold",thresholded)
-           #directionFlag=identification(image)
-           #servoControl.flap(directionFlag)
+
            if frame_buffer%30==0:
+              frame_buffer=0
               refImg=image
               #refImg=refImg[0:x,0:y-90]
               refThresh=imageSubtract(refImg)
               os.system("clear")
               print("Refrence Image changed")
            
-           global base_off
-           if key == ord('q') or base_off==1:
+           
+           if key == ord('q') or base_off.value==1:
                camera.close()
                cv2.destroyAllWindows()
                break
@@ -367,15 +402,14 @@ if __name__ == "__main__" :
                 choice=input("Enter-  1. Plan path . 2. Autonomous movement\n")
                 if choice == "2":
                         if os.path.exists(os.getcwd()+"/Database.txt")==True:
-                                t1=threading.Thread(target=autonomous)
-                                t2=threading.Thread(target=imageProcessing)
+                                #IP_addr=input("Enter the server's IP address:\n")
+                                stop_flag=Value('i',0)
+                                base_off=Value('i',0)
+                                t1=Process(target=autonomous,args=(stop_flag,base_off,))
+                                t2=Process(target=imageProcessing,args=(stop_flag,base_off,))
                                 t1.start()
                                 t2.start()
                                 print("Started both the threads succesfully !")
-
-                                #autonomous()
-                                #stop()
-                                #sys.exit()
                         else:
                                 print("Database not found . Please plan the path ..")
                                 loop()
