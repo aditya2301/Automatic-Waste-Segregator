@@ -1,3 +1,7 @@
+'''
+This script tests the IR sensor module.
+'''
+
 import RPi.GPIO as GPIO
 import time
 def binStatus():

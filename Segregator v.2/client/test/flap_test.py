@@ -1,3 +1,6 @@
+'''
+This file contains code for testing the flap setup.
+'''
 import time,Adafruit_PCA9685
 
 pwm = Adafruit_PCA9685.PCA9685()
@@ -26,7 +29,6 @@ def flap(direction):
         for i in range(right,center,-1):
             pwm.set_pwm(pin,0,i)
             #time.sleep(0.01)
-
 flap('l')
 time.sleep(2)
 flap('r')

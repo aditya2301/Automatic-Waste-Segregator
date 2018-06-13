@@ -1,3 +1,6 @@
+'''
+This script contains code for setup of the LCD module.
+'''
 import RPi.GPIO as GPIO
 import time
  
@@ -35,8 +38,6 @@ def main():
   # Initialise display
   lcd_init()
  
-  
- 
 def lcd_init():
   # Initialise display
   lcd_byte(0x33,LCD_CMD) # 110011 Initialise
@@ -51,7 +52,7 @@ def lcd_byte(bits, mode):
   # Send byte to data pins
   # bits = data
   # mode = True  for character
-  #        False for command
+  # False for command
  
   GPIO.output(LCD_RS, mode) # RS
  

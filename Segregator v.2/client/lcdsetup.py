@@ -1,3 +1,6 @@
+'''
+This script contains the setup for LCD device.
+'''
 import RPi.GPIO as GPIO
 import time
  
@@ -35,8 +38,6 @@ def main():
   # Initialise display
   lcd_init()
  
-  
- 
 def lcd_init():
   # Initialise display
   lcd_byte(0x33,LCD_CMD) # 110011 Initialise
@@ -51,10 +52,10 @@ def lcd_byte(bits, mode):
   # Send byte to data pins
   # bits = data
   # mode = True  for character
-  #        False for command
+  # False for command
  
   GPIO.output(LCD_RS, mode) # RS
- 
+
   # High bits
   GPIO.output(LCD_D4, False)
   GPIO.output(LCD_D5, False)
@@ -99,16 +100,12 @@ def lcd_toggle_enable():
  
 def lcd_string(message,line):
   # Send string to display
- 
   message = message.ljust(LCD_WIDTH," ")
- 
   lcd_byte(line, LCD_CMD)
- 
   for i in range(LCD_WIDTH):
     lcd_byte(ord(message[i]),LCD_CHR)
  
 if __name__ == '__main__':
- 
   try:
     main()
   except KeyboardInterrupt:

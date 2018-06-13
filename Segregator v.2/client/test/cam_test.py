@@ -1,26 +1,11 @@
+'''
+This file contains code for testing the camera setup.
+'''
 import cv2
 import numpy as np
 import time
 from picamera import PiCamera
 from picamera.array import PiRGBArray
-'''camera = PiCamera()
-camera.resolution = (512,512)
-#camera.zoom=(0.5,0.5,0.9,0.9)
-camera.awb_mode="fluorescent"
-camera.iso = 800
-camera.contrast=25
-camera.brightness=64
-camera.sharpness=100
-rawCapture = PiRGBArray(camera, size=(512, 512))
-for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
-	image = frame.array
-	image=image[160:490,20:]
-	cv2.imshow("Foreground", image)
-	key = cv2.waitKey(1)	
-	rawCapture.truncate(0)
-	if key==ord('q'):
-		cv2.destroyAllWindows()
-		break'''
 
 def imageSubtract(img):
     hsv=cv2.cvtColor(img,cv2.COLOR_BGR2HSV)
@@ -29,7 +14,6 @@ def imageSubtract(img):
 def  imageProcessing():
     camera = PiCamera()
     camera.resolution = (512,512)
-    #camera.zoom=(0.0,0.0,0.4,0.5)
     camera.awb_mode="fluorescent"
     camera.iso = 800
     camera.contrast=25

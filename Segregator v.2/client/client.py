@@ -1,21 +1,39 @@
+# This script contains the client side program which runs on the Raspberry Pi 3.
+# The following dependencies are imported.
+# picamera ---> PiCamera library.
+# cv2 ---> OpenCV for Image Processing.
+# os ---> system file handling.
+# socket ---> To create the connection to remote cloud system.
+# RPi.GPIO ---> Raspberry Pi GPIO handling.
+# servoControl ---> Contains codes for controlling the robotic arm.
+# twilio ---> SMS API library.
+
 from picamera import PiCamera
 from picamera.array import PiRGBArray
 import cv2,os,socket,sys,time,Adafruit_PCA9685
 import numpy as np
 from twilio.rest import Client
 import RPi.GPIO as GPIO
-
 import lcdsetup as lcd
+
+# Intialize the LCD display.
+
 LCD_LINE_1 = 0x80 # LCD RAM address for the 1st line
 LCD_LINE_2 = 0xC0 # LCD RAM address for the 2nd line
 
+# Default message to be dsiplayed when no object is detected.
 
 def default_lcd_msg():
     lcd.lcd_string("Automatic Waste",LCD_LINE_1)
     lcd.lcd_string("Segregator",LCD_LINE_2)
     time.sleep(2)
 
-      
+'''
+* Following function handles the SMS sending.
+* account_sid , auth_token ---> used for authenticating.
+* client ---> initialised to Twilion SMS API Class.
+'''
+
 def sendSMS(msg):
     account_sid = "AC3b65d4b08b4242625715cb559f5410b0"
     auth_token = "a4f4e1298494f1e9f166df22e48912f2"
@@ -23,10 +41,16 @@ def sendSMS(msg):
     client.api.account.messages.create(to="+918147661833",from_="+18043125524",body=msg)
     print("SMS sent !")
 
+'''
+* Following function checks the status of the bins to trigger SMS sending.
+* 2 IR sensors are used to detect level of filling.
+* bio ---> sensor over bio bin.
+* non-bio ---> sensor over the non-bio bin.
+* Respective SMS are sent and the LCD display is updated.
+'''
 
 def binStatus():
 
-    
     bio = GPIO.input(37)
     nonbio= GPIO.input(38)
     if  GPIO.input(37) != False : #object is near   
@@ -38,7 +62,7 @@ def binStatus():
             sendSMS(msg)
             print(msg)
             time.sleep(2)
-    
+
     if  GPIO.input(38) != False : #object is near  
         time.sleep(2)
         if  GPIO.input(38) !=False :
@@ -52,6 +76,13 @@ def binStatus():
     print("Bin status is updated !")
     default_lcd_msg()
 
+'''
+* The following function handles the direction of rotation of the flap.
+* direction ---> flag representing direction of rotation.
+* center ---> flap resting position.
+* left ---> flap left side rotated.
+* right ---> flap right side rotated.
+'''
 
 def flap(direction):
     print("Operating flap..")
@@ -77,11 +108,21 @@ def flap(direction):
             pwm.set_pwm(pin,0,i)
             time.sleep(0.01)
 
+''' 
+* The following function handles the communication with the Cloud system where Machine Learning 
+analysis of the image takes place.
+* Port 60000 is used for establishing the connection.
+* img ---> refers to the image of the detected image.
+* s---> instance of the socket class.
+* data ---> stores the byte content of the image.
+* length ---> length of the total bytes in data.
+* status ---> acknowledgemnt from server.
+* binFlag ---> Direction to rotate the flap.
+'''
 
 def clientResponse(img,Ip_addr):
     filename="newimg.jpg"
     cv2.imwrite(filename,img)
-    #extractForegroundImage(filename)
     s = socket.socket()         
     port = 60000              
     s.connect((Ip_addr, port))
@@ -129,24 +170,32 @@ def clientResponse(img,Ip_addr):
     os.system("clear")
     return binFlag.decode("utf-8")
 
-
-
+# The following function converts the RGB image into HSV color space.
 
 def imageSubtract(img):
     hsv=cv2.cvtColor(img,cv2.COLOR_BGR2HSV)
     return hsv
 
+'''
+* The following function analyses the presence of any object.
+* camera ---> Initialises to PiCamera class.
+* First 30 frames are rejected to properly intialise the camera on startup.
+* Reference image and new images are subtracted.
+* Contours of size > 1000 and number <4 are searched. If found, object is detected.
+* cX, cY ---> centre of the object in the image frame.
+* binDir ---> contains the ML analysis of the detected object.
+* The background image is refreshed after every 30 frames for maintaining keeping noise effects to minimum.
+'''
+
 def  imageProcessing(Ip_addr):
     camera = PiCamera()
     camera.resolution = (512,512)
-    #camera.zoom=(0.0,0.0,0.4,0.5)
     camera.awb_mode="fluorescent"
     camera.iso = 800
     camera.contrast=25
     camera.brightness=64
     camera.sharpness=100
     rawCapture = PiRGBArray(camera, size=(512, 512))
-
     first_time=0
     frame_buffer=0
     counter=0
@@ -160,7 +209,6 @@ def  imageProcessing(Ip_addr):
                 print("Frame rejected -",str(frame_buffer))
                 frame_buffer+=1
                 continue
-            #os.system("clear")
             refImg=frame.array
             refImg=refImg[40:490,25:]
             refThresh=imageSubtract(refImg)
@@ -168,7 +216,6 @@ def  imageProcessing(Ip_addr):
             frame_buffer=0
 
         frame_buffer+=1
-
         image = frame.array
         image=image[40:490,25:]
         rawCapture.truncate(0)
@@ -177,7 +224,6 @@ def  imageProcessing(Ip_addr):
         key = cv2.waitKey(1)
 
         diff=cv2.absdiff(refThresh,newThresh)
-        #cv2.imshow("subtracted",diff)
         cv2.imshow("Background",refThresh)
         diff=cv2.cvtColor(diff,cv2.COLOR_BGR2GRAY)
         kernel = np.ones((5,5),np.uint8)
@@ -187,15 +233,12 @@ def  imageProcessing(Ip_addr):
 
         _, thresholded = cv2.threshold(diff, 0 , 255, cv2.THRESH_BINARY +cv2.THRESH_OTSU)
         _, contours, _= cv2.findContours(thresholded,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
-        #print("Total contours ",len(contours))
         try:
             c=max(contours,key=cv2.contourArea)
             mask = np.zeros(newThresh.shape[:2],np.uint8)
             new_image = cv2.drawContours(mask,[c],0,255,-1,)
             cv2.imshow("new",new_image)
             cv2.imshow("threshold",thresholded)
-            #print("Area ",str(cv2.contourArea(c)))
-            #print("Total contours ",str(len(contours)))
             if cv2.contourArea(c)>1000 and len(contours)<=4:
                 if counter==0:
                     print("Possible object detcted ! Going to sleep for 3 seconds")
@@ -239,25 +282,28 @@ def  imageProcessing(Ip_addr):
             cv2.destroyAllWindows()
             break
 
-
+'''
+* The script execution starts from here.
+* The IR sensors connected to the GPIO pins are intialised.
+* The pwm needed for operating the motor is initialised.
+* The IP address is hardcoded here which is generally considered a bad practice. 
+  Avoid hardcoding any value. 
+* The system is started by invoking the imageProcessing function.
+'''
 
 if __name__ == "__main__" :
     try:
         GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BOARD)
-        GPIO.setup(37,GPIO.IN) #GPIO 16 bio degradable 
-        GPIO.setup(38,GPIO.IN) #GPIO 18 non bio degradable bin
-    
+        GPIO.setup(37,GPIO.IN) #GPIO 16 for IR connected over bio degradable  bin
+        GPIO.setup(38,GPIO.IN) #GPIO 18 for IR connected over non bio degradable bin
         pwm = Adafruit_PCA9685.PCA9685()
         pwm.set_pwm_freq(50)
         print("Started the system !")
         lcd.main()
         default_lcd_msg()
-        #Ip_addr = input("Enter server's IP address for connection: ")
         Ip_addr = "192.168.43.36"
         imageProcessing(Ip_addr)
-        
-         
     except KeyboardInterrupt:  # When 'Ctrl+C' is pressed, the child program destroy() will be  executed.
         GPIO.cleanup() 
     except Exception as e:
