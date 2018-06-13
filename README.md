@@ -1,0 +1,2 @@
+# Automatic-Waste-Segregator
+
