@@ -1,7 +1,15 @@
+'''
+* This program runs on the cloud machine where Machine Learning analysis takes place.
+* The following dependencies are imported.
+* tensorFlow --->  conatins the ML code.
+* socket ---> makes the remote connection with the client running on Raspberry Pi.
+'''
+
 from tensorFlow import identification
 import socket,sys,os            
 import datetime
 
+# s ---> initialised to socket class.
 s = socket.socket()         
 port = 60000
 host = socket.gethostname()
@@ -9,7 +17,16 @@ print(host)
 print(os.getcwd())
 s.bind((host, port))        
 s.listen(5)     
-print("Socket is listening")            
+print("Socket is listening")      
+
+'''
+* c ---> client device id.
+* addr ---> client device address.
+* length ---> gets the file size.
+* The image is received one byte at a time and stored with name = name.
+* value ---> receives the result of the ML analysis.
+'''
+
 while True:
    try:
       c, addr = s.accept()     
@@ -25,7 +42,6 @@ while True:
       value=identification(name)
       c.send(bytes(value,"utf-8"))
       c.close()
-
    except Exception as e:
    	if type(e).__name__=="EOFError":
    		sys.exit()

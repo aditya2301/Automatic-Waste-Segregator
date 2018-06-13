@@ -1,3 +1,14 @@
+# This script contains the client side program which runs on the Raspberry Pi 3.
+# The following dependencies are imported.
+# picamera ---> PiCamera library.
+# cv2 ---> OpenCV for Image Processing.
+# os ---> system file handling.
+# multiprocessing ---> Runs multiple process at a time.
+# socket ---> To create the connection to remote cloud system.
+# bluetooth ---> To receive the commands to control the bot via bluetooth.
+# RPi.GPIO ---> Raspberry Pi GPIO handling.
+# servoControl ---> Contains codes for controlling the robotic arm.
+
 from picamera import PiCamera
 from picamera.array import PiRGBArray
 import cv2,os,socket,sys,time,bluetooth
@@ -6,7 +17,8 @@ from multiprocessing import Process,Value
 import RPi.GPIO as GPIO
 import servoControl
 
-port = 1
+# MotorPinX ---> GPIO pins to control the wheels.
+
 MotorPin1   = 11    # pin11
 MotorPin2   = 12    # pin12
 MotorEnable1 = 13    # pin13
@@ -15,26 +27,34 @@ MotorPin3   = 16    # pin11
 MotorPin4   = 15    # pin12
 MotorEnable2 = 18
 
-Motor_speed_f=50#41#34
-Motor_speed_b=50#41#30
-Motor_speed_r=50#41#37
-Motor_speed_l=50#41#37
+# Motor_speed_X ---> Manipulate this to control the RPM of the DC motor.
 
+Motor_speed_f=50#41
+Motor_speed_b=50#41
+Motor_speed_r=50#41
+Motor_speed_l=50#41
+
+# GPIO settings of each I/O pins.
 
 GPIO.setwarnings(False)
-GPIO.setmode(GPIO.BOARD)          # Numbers GPIOs by physical location
+GPIO.setmode(GPIO.BOARD)          # Numbers GPIOs by physical location. Alternative -> BCM.
 GPIO.setup(MotorPin1, GPIO.OUT)   # mode --- output
 GPIO.setup(MotorPin2, GPIO.OUT)
 GPIO.setup(MotorEnable1, GPIO.OUT)
-#GPIO.output(MotorEnable1, GPIO.LOW) # motor stop
-GPIO.setup(MotorPin3, GPIO.OUT)   # mode --- output
+GPIO.setup(MotorPin3, GPIO.OUT)  
 GPIO.setup(MotorPin4, GPIO.OUT)
 GPIO.setup(MotorEnable2, GPIO.OUT)
-#GPIO.output(MotorEnable2, GPIO.LOW)
+
+# Initialize the PWM signals on the MotorEnable Pins.
+
 pwm1=GPIO.PWM(13,100)
 pwm2=GPIO.PWM(18,100)
 pwm1.start(0)
 pwm2.start(0)
+
+# The following sections contains code for controlling the motion of the wheels.
+# forward() ---> consists of mechanism to control the forward rotation of the wheel.
+# start ---> a counter to record the time spent in that particular direction.
 
 def forward():
         global start
@@ -43,10 +63,12 @@ def forward():
         GPIO.output(MotorPin1, GPIO.HIGH)  # clockwise
         GPIO.output(MotorPin2, GPIO.LOW)
         GPIO.output(MotorPin3, GPIO.LOW)  # clockwise
-        GPIO.output(MotorPin4, GPIO.HIGH)
-        
+        GPIO.output(MotorPin4, GPIO.HIGH) 
         start=time.time()
-        
+
+# backward() ---> consists of mechanism to control the backward rotation of the wheel.
+# start ---> a counter to record the time spent in that particular direction.
+
 def backward():
         global start
         pwm1.ChangeDutyCycle(Motor_speed_b)
@@ -55,8 +77,10 @@ def backward():
         GPIO.output(MotorPin2, GPIO.HIGH)
         GPIO.output(MotorPin3, GPIO.HIGH)  # clockwise
         GPIO.output(MotorPin4, GPIO.LOW)
-        
         start=time.time()
+
+# left() ---> consists of mechanism to control the left rotation of the wheel.
+# start ---> a counter to record the time spent in that particular direction.
 
 def left():
         global start
@@ -66,8 +90,10 @@ def left():
         GPIO.output(MotorPin2, GPIO.LOW)
         GPIO.output(MotorPin3, GPIO.LOW)  # clockwise
         GPIO.output(MotorPin4, GPIO.HIGH)
-        
         start=time.time()
+
+# right() ---> consists of mechanism to control the right rotation of the wheel.
+# start ---> a counter to record the time spent in that particular direction.
 
 def right():
         global start
@@ -80,15 +106,36 @@ def right():
         
         start=time.time()
 
+# stop() ---> consists of mechanism to stop the rotation of the wheel.
+
 def stop():
         pwm1.ChangeDutyCycle(0)
         pwm2.ChangeDutyCycle(0)
+
+'''destroy() ---> It stops the wheel rotation, clean GPIO of 
+any stray output voltages and also closes the socket connection 
+with the Bluetooth client device.'''
 
 def destroy():
         client_socket.close()
         server_socket.close()
         stop()
         GPIO.cleanup() 
+
+''' 
+* The following function handles the communication with the Cloud system where Machine Learning 
+analysis of the image takes place.
+
+* The IP address is hardcoded here which is generally considered a bad practice. 
+  Avoid hardcoding any value.
+
+* img ---> refers to the image of the detected image.
+* s---> instance of the socket class.
+* data ---> stores the byte content of the image.
+* length ---> length of the total bytes in data.
+* status ---> acknowledgemnt from server.
+*  binFlag ---> Direction to rotate the flap.
+'''
 
 def clientResponse(img):
 	#os.system("clear")
@@ -103,7 +150,6 @@ def clientResponse(img):
 	print("\nSending Length information..")
 	length=str(len(data))
 	s.send(bytes(length,"utf-8"))
-	
 	status=s.recv(2)
 	print("Length Reception Acknowledgement - "+str(status.decode("utf-8")))
 	print("Sending the image to server for Tensorflow processing. . .")
@@ -140,42 +186,39 @@ def clientResponse(img):
 	os.system("clear")
 	return binFlag.decode("utf-8")
 
+'''
+* The following function contains code for planning the path of the bot.
+* 'f' ---> forward , 'b' ---> backward , 'l' ---> left, 'r' ---> right.
+* difference ---> stores the time difference betwween start and stop of
+  naviagtion in one particular direction.
+
+* The database is updated in the format of ---> direction duration.
+'''
 
 def loop():
         server_socket=bluetooth.BluetoothSocket( bluetooth.RFCOMM )
         server_socket.bind(("",port))
         server_socket.listen(1)
-        
         client_socket,address = server_socket.accept()
-        while True:
-                
+        while True:   
                 data = client_socket.recv(1024)
                 if data.decode('utf-8')=='f':
-                        #start=time.time()
                         flag="forward"
                         forward()
                 elif data.decode('utf-8')=='b':
-                        #start=time.time()
                         flag="backward"
-                        backward()
-                        
+                        backward()          
                 elif data.decode('utf-8')=='l':
-                        #start=time.time()
                         flag="left"
                         left()
                 elif data.decode('utf-8')=='r':
-                        #start=time.time()
                         flag="right"
-                        right() 
-                        
+                        right()     
                 elif data.decode('utf-8')=='s':
-                        
-                        
                         stop()
                         end=time.time()
                         global start
                         difference=(end-start)
-                        
                         if not flag=="":
                                 with open("Database.txt","a+")as f:
                                         f.write(flag+"   "+str(difference)+"\n")
@@ -184,10 +227,20 @@ def loop():
                                 start=0
                                 difference=0
                 elif data.decode('utf-8')=='q':
-                        #stop()
                         destroy()
-                        #GPIO.cleanup()
-                        #sys.exit()
+
+'''
+* The following functions controls the movement of the bot in autonomous mode.
+* A delay of 3 seconds is included to allow the Camera function to execute.
+* The following function is run as a seprate process to allow parallel movement of bot 
+  along with the camera processing.
+
+* The database values are fetched ---> direction duration.
+* The bot is moved in the direction for that particular duration before the direction is changed.
+* stop_flag --> 1, when Camera picks up an object in its path. Otherwise, 0. 
+* base_off ---> indicates end of the path.
+'''
+
 def autonomous(stop_flag,base_off):
     current_time=time.time()+3
     while time.time()<=current_time:
@@ -260,14 +313,24 @@ def autonomous(stop_flag,base_off):
     base_off.value=1
                 
                   
-
+# The following function converts the RGB image into LUV color space.
 def imageSubtract(img):
-    #img = cv2.bilateralFilter(img,3,60,60)  
     yuv=cv2.cvtColor(img,cv2.COLOR_BGR2LUV)
     l,u,v=cv2.split(yuv)
-    #y=cv2.equalizeHist(y)
     return v
 
+'''
+* The following function analyses the path of the bot for thr presence of any object.
+* camera ---> Initialises to PiCamera class.
+* First 10 frames are rejected to properly intialise the camera on startup.
+* Reference image and new images are subtracted.
+* Contours of size > 300 and number <3 are searched. If found, object is detected.
+* cX, cY ---> centre of the object in the image frame.
+* The image frame is divided into 2 quadrants for ease of the robotic arm to identify the onject's position.
+* The object is picked up by invoking the appropriate servoControl function.
+* binDir ---> contains the ML analysis of the detected object.
+* The background image is refreshed after every 30 frames for maintaining keeping noise effects to minimum.
+'''
 
 def  imageProcessing(stop_flag,base_off):
     x=440
@@ -277,24 +340,19 @@ def  imageProcessing(stop_flag,base_off):
     
     camera = PiCamera()
     camera.resolution = (512,512)
-    #camera.zoom=(0.0,0.0,0.4,0.5)
     camera.awb_mode="fluorescent"
     camera.iso = 800
     camera.contrast=25
     camera.brightness=64
     camera.sharpness=100
     rawCapture = PiRGBArray(camera, size=(512, 512))
-
     first_time=0
     frame_buffer=0
     counter=0
     camera.start_preview()
     time.sleep(1)
 
-   
-
     for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
-        
         if first_time==0:
             rawCapture.truncate(0)
             if frame_buffer<10:
@@ -308,9 +366,7 @@ def  imageProcessing(stop_flag,base_off):
             first_time=1
             frame_buffer=0
 
-
         frame_buffer+=1
-        
         image = frame.array
         image=image[260:512,50:490]
         cv2.imshow("Foreground", image)
@@ -329,8 +385,7 @@ def  imageProcessing(stop_flag,base_off):
         
         try:
            c=max(contours,key=cv2.contourArea)
-           x,y,w,h = cv2.boundingRect(c)
-           
+           x,y,w,h = cv2.boundingRect(c) 
            cv2.rectangle(thresholded,(x,y),(x+w,y+h),(125,125,125),2)
            if cv2.contourArea(c)>300 and len(contours)<=3:
             if counter==0:
@@ -347,16 +402,14 @@ def  imageProcessing(stop_flag,base_off):
                 print("Total contours found=",len(contours))
                 print("Object detected with area = ",cv2.contourArea(c))
                 print("Object's X,Y=",cX,cY)
-
                 print("Object is located at = ",end="")
                 if  cX<vertical:
                     print("Object located in 1st Quadrant")
                     binDir=clientResponse(image)
-                    servoControl.quadrant2(binDir)#ulta for us
+                    servoControl.quadrant2(binDir)
                     first_time=0
                     frame_buffer=0
                     continue
-                    #directionFlag=identification(image)
                 elif  cX>vertical:
                     print("Object located 2nd Quadrant")
                     binDir=clientResponse(image,IP_addr.value)
@@ -364,7 +417,6 @@ def  imageProcessing(stop_flag,base_off):
                     first_time=0
                     frame_buffer=0
                     continue
-                    #directionFlag=identification(image)
                 elif cX==vertical:
                     print(" Object located between 1 and 2nd Quadrant")
                     binDir=clientResponse(iamge,IP_addr.value)
@@ -387,15 +439,24 @@ def  imageProcessing(stop_flag,base_off):
               os.system("clear")
               print("Refrence Image changed")
            
-           
            if key == ord('q') or base_off.value==1:
                camera.close()
                cv2.destroyAllWindows()
                break
-           #print(frame_buffer)
         except Exception as e:
             print(e)
             pass
+
+'''
+* The program execution begins from here.
+* 1 ---> For setting the path via bluetooth client.
+* 2 ---> Autonomous movement and detecting waste.
+* t1 ---> Process 1 which controls the base movement.
+* t2 ---> Process 2 which controls the Image Processing.
+* t1 and t2 run at the same time so some sort of value passing is required between them.
+* stop_flag is set to 1 by ImageProcessing funtion whenevr an object is detected. It stops the bot from moving.
+* base_off is set to 1 by baseMovement function after the complete path is traversed.
+'''
 
 if __name__ == "__main__" :
   try:

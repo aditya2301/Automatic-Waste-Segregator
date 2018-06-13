@@ -91,6 +91,10 @@ def identification(file_name):
 
   #print('\nEvaluation time (1-image): {:.3f}s\n'.format(end-start))
 
+  ''' 
+  'l' ---> biodegradable.
+  'r' ---> non-biodegradable.
+  '''
 
   if results[0]>results[1]:
     print(str(labels[0])+" "+str(results[0]))
