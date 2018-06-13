@@ -1,4 +1,4 @@
 # Automatic-Waste-Segregator
 
-<img src="coming-soon.jpg">
+<img src="coming-soon.png">
 
