@@ -35,8 +35,8 @@ def default_lcd_msg():
 '''
 
 def sendSMS(msg):
-    account_sid = "AC3b65d4b08b4242625715cb559f5410b0"
-    auth_token = "a4f4e1298494f1e9f166df22e48912f2"
+    account_sid = "TWILIO_ACCOUNT_SID"
+    auth_token = "TWILIO_AUTH_TOKEN"
     client = Client(account_sid, auth_token)
     client.api.account.messages.create(to="+918147661833",from_="+18043125524",body=msg)
     print("SMS sent !")
