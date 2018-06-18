@@ -1,5 +1,6 @@
 # Automatic Waste Segregator
-<a href="mailto:dev.dibyo@gmail.com"> ![Ask Me Anything](https://img.shields.io/badge/Ask%20me-anything-1abc9c.svg?longCache=true&style=plastic)</a> [![made-with-python](https://img.shields.io/badge/Made%20with-Python-blue.svg?longCache=true&style=plastic)](https://www.python.org/) [![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg?longCache=true&style=plastic)](https://github.com/Naereen/StrapDown.js/blob/master/LICENSE)  <a href="https://github.com/boudhayan-dev/Automatic-Waste-Segregator/graphs/contributors">![PyPI - Status](https://img.shields.io/pypi/status/Django.svg?style=plastic) ![Contributor](https://img.shields.io/badge/Contributors-3-orange.svg?longCache=true&style=plastic)</a><br>
+<a href="mailto:dev.dibyo@gmail.com"> ![Ask Me Anything](https://img.shields.io/badge/Ask%20me-anything-1abc9c.svg?longCache=true&style=plastic)</a> [![made-with-python](https://img.shields.io/badge/Made%20with-Python-blue.svg?longCache=true&style=plastic)](https://www.python.org/) [![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg?longCache=true&style=plastic)](https://github.com/Naereen/StrapDown.js/blob/master/LICENSE) ![PyPI - Status](https://img.shields.io/pypi/status/Django.svg?style=plastic) <a href="https://github.com/boudhayan-dev/Automatic-Waste-Segregator/graphs/contributors">![Contributor](https://img.shields.io/badge/Contributors-3-orange.svg?longCache=true&style=plastic)</a>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;<a href="https://github.com/boudhayan-dev/Automatic-Waste-Segregator/tree/v.01"><img src="https://img.shields.io/badge/Version-0.1-brightgreen.svg?longCache=true&style=for-the-badge"></a>&emsp;<a href="https://github.com/boudhayan-dev/Automatic-Waste-Segregator/tree/v.02"><img src="https://img.shields.io/badge/Version-0.2-red.svg?longCache=true&style=for-the-badge"></a>
+<br>
 
 ###### Welcome to the Automatic Waste Segregator project !
 <p>
@@ -50,9 +51,9 @@ There are 2 versions of the system:<br>
 
 <table align="center">
 	<tr>
-		<td width="400px">&emsp;&emsp;&emsp;&emsp;&emsp;<img src="images/v1.0.jpeg" height="200px" width="160px"></td>
+		<td width="400px">&emsp;&emsp;&emsp;&emsp;&emsp;<a href="https://github.com/boudhayan-dev/Automatic-Waste-Segregator/tree/v.01"><img src="images/v1.0.jpeg" height="200px" width="160px"></a></td>
 		<td width="600px">
-			<a href="https://github.com/boudhayan-dev/Automatic-Waste-Segregator/tree/v.01">&emsp;&emsp;Version 0.1</a><br><br>
+			&emsp;&emsp;<a href="https://github.com/boudhayan-dev/Automatic-Waste-Segregator/tree/v.01">Version 0.1</a><br><br>
 			<ul>
 				<img src="images/checked.png"> Segreagtes waste into 2 categories.<br>
 				<img src="images/checked.png"> Provides Live monitoring via Web Application.<br>
@@ -61,9 +62,9 @@ There are 2 versions of the system:<br>
 		</td>
 	</tr>
 	<tr>
-		<td width="400px">&emsp;&emsp;&emsp;&emsp;&emsp;<img src="images/v2.0.jpeg" height="220px" width="160px"></td>
+		<td width="400px">&emsp;&emsp;&emsp;&emsp;&emsp;<a href="https://github.com/boudhayan-dev/Automatic-Waste-Segregator/tree/v.02"><img src="images/v2.0.jpeg" height="220px" width="160px"></a></td>
 		<td width="600px">
-			<a href="https://github.com/boudhayan-dev/Automatic-Waste-Segregator/tree/v.02">&emsp;&emsp;Version 0.2</a><br><br>
+			&emsp;&emsp;<a href="https://github.com/boudhayan-dev/Automatic-Waste-Segregator/tree/v.02">Version 0.2</a><br><br>
 			<ul>
 				<img src="images/checked.png"> Segreagtes waste into 2 categories.<br>
 				<img src="images/checked.png"> Robotic arm that picks up waste by itself.<br>
