@@ -7,7 +7,7 @@
 	<br><br>
 	The following subsystems are used:
 	<br><br>
-	<img src="block_diagram.jpg" align="center" height="500px" width="650px">
+	<img src="block_diagram.JPG" align="center" height="500px" width="650px">
 </p>
 <br>
 
