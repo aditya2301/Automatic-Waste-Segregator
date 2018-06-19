@@ -1,3 +1,3 @@
-# Automatic-Waste-Segregator - v1
+# Version 0.1
 
-<img src="coming-soon.jpg">
+
