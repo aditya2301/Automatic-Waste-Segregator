@@ -34,7 +34,7 @@ This version consists of a dustbin that is partitioned centrally to accomodate t
 	</tr>
 </table>
 
-<br><br>
+<br>
 
 ### Usage
 
@@ -80,10 +80,13 @@ python client.py
 
 The device should takes approx 10 seconds to start up. Place any object on its lid, to see the corresponding results.
 
-<br><br>
+<br>
 
 ### Demonstration
 
 The working video of the system :<br>
 
-<a href="https://www.youtube.com/watch?v=UH9mXYVWXmw"><img src="images/youtube.png" width="700px"></a>
+&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;<a href="https://www.youtube.com/watch?v=UH9mXYVWXmw"><img src="images/youtube.png" width="700px"></a>\
+
+<br>
+© All rights reserved.
