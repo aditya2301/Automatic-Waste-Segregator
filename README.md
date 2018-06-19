@@ -1,3 +1,4 @@
+
 # Automatic Waste Segregator
 <a href="mailto:dev.dibyo@gmail.com"> ![Ask Me Anything](https://img.shields.io/badge/Ask%20me-anything-1abc9c.svg?longCache=true&style=plastic)</a> [![made-with-python](https://img.shields.io/badge/Made%20with-Python-blue.svg?longCache=true&style=plastic)](https://www.python.org/) [![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg?longCache=true&style=plastic)](https://github.com/Naereen/StrapDown.js/blob/master/LICENSE) ![PyPI - Status](https://img.shields.io/pypi/status/Django.svg?style=plastic) <a href="https://github.com/boudhayan-dev/Automatic-Waste-Segregator/graphs/contributors">![Contributor](https://img.shields.io/badge/Contributors-3-orange.svg?longCache=true&style=plastic)</a>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;<a href="https://github.com/boudhayan-dev/Automatic-Waste-Segregator/tree/v.01"><img src="https://img.shields.io/badge/Version-0.1-brightgreen.svg?longCache=true&style=for-the-badge"></a>&emsp;<a href="https://github.com/boudhayan-dev/Automatic-Waste-Segregator/tree/v.02"><img src="https://img.shields.io/badge/Version-0.2-red.svg?longCache=true&style=for-the-badge"></a>
 <br>
@@ -11,12 +12,15 @@
 	<br><br>
 	<span>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</span>
 	<img src="images/block_diagram.JPG" align="center" height="400px" width="500px">
+
 </p>
 <br>
 
 ## Dependency
 
+
 ##### Hardware Requirements:
+
 
 - Raspberry Pi 3B.
 - Pi Camera.
@@ -26,7 +30,9 @@
 - 16x2 LCD display module.
 - Power supply - 5V,2A.
 
+
 ##### Software Requirements:
+
 
 - Python 3.
 - Python Dependencies:
@@ -42,6 +48,7 @@
 - Twilio SMS API.
 - Google Cloud VM.
 - Tensorflow for Poets.
+
 
 <br>
 
@@ -104,3 +111,4 @@ There are 2 versions of the system:<br>
 <br>
 
 © All rights reserved.
+
