@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+<br><br><br><hr>
+<div class="container main-body">
+    <div class="row">
+        <div class="col-md-12">
+            <h1 id="signin">
+                Register!
+            </h1>
+            <hr>
+        </div> 
+    </div>
+    <form action="" method="post">
+    {{ form.hidden_tag() }}
+    <div class="row" id="form">
+        <div class="col-md-12">
+            {{ form.username.label }}<br>
+            {{ form.username(size=32 , class_='form-fields') }}<br>
+            {% for error in form.username.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+            <br>
+            {{ form.email.label }}<br>
+            {{ form.email(size=64, class_='form-fields') }}<br>
+            {% for error in form.email.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+            <br>
+            {{ form.password.label }}<br>
+            {{ form.password(size=32, class_='form-fields') }}<br>
+            {% for error in form.password.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+            <br>
+            {{ form.password2.label }}<br>
+            {{ form.password2(size=32, class_='form-fields') }}<br>
+            {% for error in form.password2.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+            <br>
+            {{ form.passkey.label }}<br>
+            {{ form.passkey(size=32, class_='form-fields') }}<br>
+            {% for error in form.password2.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+            <br>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            
+            <span id='submit-field'><p >{{ form.hidden_tag() }}{{ form.submit(class_='submit-button-login') }}</p></span>
+        </div>
+    </div>
+    <br>
+    <br>
+    </form>
+</div>
+
+    
+        
+    
+{% endblock %}

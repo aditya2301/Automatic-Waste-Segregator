@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block content %}
+<br><br>
+<div class="container main-body">
+    <hr>
+    <br>
+    <div class="row " >
+        <div class="col-md-12">
+            <div class="jumbotron">
+                <h1 id="hdr">Messages !</h1>
+            </div>
+        </div>
+    </div>
+    <form action="" method="post">
+    {{ form.hidden_tag() }}
+    <div class="row">
+        <div class="col-md-12" id="user-feedback">
+                <table class="table">
+                    <tr>
+                        <td >
+                            {{ form.feedback(rows='5',cols='85') }}
+                            {% for error in form.feedback.errors %}
+                            <span style="color: red;">[{{ error }}]</span>
+                            {% endfor %}  
+                        </td>
+                        <td>
+                            <br>
+                            {{ form.submit(class_='submit-button') }}
+                        </td>
+                    </tr>
+                </table>       
+            
+        </div>
+    </div>
+    </form>
+        
+    
+    {% set ns = namespace(counter=0) %}
+    <div class="row">
+        <div class="col-md-12">
+            {% if posts|length > 0 %}
+
+            <table class="table table-hover feedback-table">
+                {% for row in range(rows) %}
+                <tr class="row-hover">
+                    {% for data in range(3) %}
+                        {% if ns.counter  < posts|length %}
+                            <td id="user-space">
+                                
+                                    {% set clr= ["#0d83e5","#e8ef09","#c00ad1"]|random %}
+                                    <font color={{ clr }}><span id="username"><strong> </strong></span></font>
+                                    <span id="user-message">{{ posts[ns.counter].feedback }}</span><br><br>said <strong>{{ moment(posts[ns.counter].timestamp).fromNow() }}</strong></font>
+                                    {% set ns.counter = ns.counter + 1 %}
+                            
+                                
+                             </td>   
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+        
+        <div class="col-md-6" style="text-align: left;">
+            {% if prev_url %}
+            
+                <a href="{{ prev_url }}" id="pagination"><span class="glyphicon glyphicon-backward" aria-hidden="true"></span><strong> Previous</strong></a>
+                {% endif %}
+        </div>
+        
+        {% if next_url %}
+        <div class="col-md-6" style="text-align: right;">
+                
+
+                <a href="{{ next_url }}" id="pagination"><strong>Next </strong><span class="glyphicon glyphicon-forward" aria-hidden="true"></span></a>
+                
+        </div>
+        {% endif %}
+        
+    </div>
+    {% endif %}
+    <br><br><br>
+</div>
+
+
+
+            
+
+{% endblock %}

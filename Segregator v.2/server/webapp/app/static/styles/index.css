@@ -1,0 +1,39 @@
+.jumbotron{
+	text-align: center;
+	font-family: 'Saira', sans-serif;
+	background-color:#48ba94/*#18cca7/*#ff002e*/;
+
+}
+
+.jumbotron:hover{
+	background-color:white ;
+}
+
+.jumbotron:hover #hdr{
+	color: #1a9977;
+}
+#introduction{
+	font-size: 21px;
+	font-family: 'Saira', sans-serif;
+	text-align: justify;
+	color: black;
+	font-style: bold;
+
+}
+
+body {
+	background-color:#e5fce9;
+}
+
+
+.main-body{
+	background-color:#d3ede4;
+}
+
+#hdr{
+	font-size: 65px;
+	color: black;
+	font-style: bold;
+}
+
+

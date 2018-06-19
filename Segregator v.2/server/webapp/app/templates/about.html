@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% block content %}
+
+<br><hr>
+<div class="container main-body">
+	<hr>
+	<br>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="jumbotron ">
+			  <h1 id="hdr">ABOUT</h1>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12" id="text-doc">
+			
+			The project "Automatic Waste Segregator" has been developed by the students of Dayananda Sagar College of Engineering , Bangalore namely , Boudhayan Dev, Aditya Agarwal, Chinmay Hebbal , Aishwarya H.S. The device is capable of  detecting , identifying and segregating waste items without any human intervention. 
+			<br><br>
+			The prime motivation behind this project has been the problem that affects us all i.e Waste Management. The million tons of waste that are generated everyday, do not get properly segreagted and as a result large portion of the non biodegradable waste items are mixed with biodegradable ones and are dumped in landmines. This ultimately piles up and their effect on the environment esp. soil and groundwater resources becomes devastating. Thus, we have come up with the idea that if we can segregate the waste items at the primary level itself, then the percentage of mixup can be reduced by a great margin. This in turn will also help in increasing the amount of recyclable items from the waste heap.
+
+			 <br><br>
+			 <strong>The major components of our project involve the following parts :- </strong><br><br>
+			 <ul class="list-group">
+			  <li class="list-group-item list-group-item-warning "><a class="topic-list" href="#ip-header">Image processing</a></li>
+			  <li class="list-group-item list-group-item-success "><a class="topic-list" href="#ml-header" >Machine Learning</a></li>
+			  <li class="list-group-item list-group-item-danger "><a class="topic-list" href="#ws-header">Web server</a></li>
+			</ul>
+			<br>
+		</div>
+		<div class="page-header" id="ip-header">
+			  <h1><strong>Image Processing</strong></h1>
+		</div>
+	</div>
+	
+
+	<div class="row">
+		<div class="col-md-8" id="text-doc">
+				Raspberry Pi 3 is the CPU for the entire system. For Image processing, we have used PiCamera v.2 and OpenCV module to perform the background subtraction. Background subtraction was used to detect any object's presence on the rotating flap.
+				<br><br>
+				<img src="{{ url_for('static',filename='styles/backgroundSub2.png') }}" width="700px" height="300px">
+				<br>
+			
+		</div>
+		<div class="col-md-4" id="text-doc">
+
+			<a href="https://www.raspberrypi.org/"><img src="https://seeklogo.com/images/R/raspberry-pi-logo-8240ABBDFE-seeklogo.com.png" height="200px"></a>
+			<br><br>
+			Background Subtraction also pinpoints the object's location in the image frame. The location is useful to generate some useful statistics later on.
+		</div>
+		
+		
+	</div>
+	
+
+	<div class="row" id="ml-header">
+		<div class="col-md-12">
+			<div class="page-header">
+					  <h1 ><strong>Machine Learning</strong></h1>
+				</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-4" id="text-doc">
+			The identification of the waste category is performed with the help of Deep Neural Networks. We have trained a dataset of 50,000 images belonging to biodegradable and non-biodegradable categories. The Nerual network was trained using Transfer Learning. 
+		</div>
+		<div class="col-md-4">
+			<img src="{{ url_for('static',filename='styles/nonbio.jpg') }}" width="350px" height="300px">
+		</div>
+		<div class="col-md-4">
+			<img src="{{ url_for('static',filename='styles/bio.jpg') }}" width="350px" height="300px">
+		</div>
+	</div>
+	<div class="row" id="ws-header">
+		<div class="col-md-12">
+			<div class="page-header">
+					  <h1><strong>Web server</strong></h1>
+				</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-6">
+			<a href="http://flask.pocoo.org/"> <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Flask_logo.svg/1200px-Flask_logo.svg.png" width="500px" height="200px"></a>
+		</div>
+		<div class="col-md-6" id="text-doc">
+			<br>
+			The final component is the Web server which serves as the control center for the entire system. Navigate to Dashboard, to view the test results obtained during the trial phase.This webserver is built using Flask framework which displays real-time operation of the system.
+		</div>
+	</div>
+	<br>
+	<br>
+	<hr>
+	
+
+	<div class="row" id="text-doc">
+		<div class="col-md-12" align="center">
+				<div class="page-header" id="team" >
+					  <h1><strong >Team Details</strong></h1>
+				</div>
+				<img src="{{ url_for('static',filename='styles/groupie.jpeg') }}" height="600px" width="80%" >
+				
+			<table  class="table table-hover" id="student-table">
+				  <thead>
+					  <th height="100" width="100">NAME</th>
+					  <th height="100" width="100">USN</th>
+					  <th height="100" width="100">PHOTO</th>
+				  </thead>
+				  <tr class="warning">
+				  	<td height="100" width="100">BOUDHAYAN DEV</td>
+				  	<td height="100" width="100">1DS14EC035</td>
+				  	<td><img id="picture" src="{{ url_for('static',filename='styles/dev.jpeg') }}" height="100" width="100"></td>
+				  </tr>
+				  <tr class="success">
+				  	<td height="100" width="100">ADITYA AGARWAL</td>
+				  	<td height="100" width="100">1DS14EC011</td>
+				  	<td><img id="picture" src="{{ url_for('static',filename='styles/aditya.jpeg') }}" height="100" width="100"></td>
+				  
+				  </tr>
+				  <tr class="danger">
+				  	<td height="100" width="100">CHINMAY HEBBAL</td>
+				  	<td height="100" width="100">1DS14EC038</td>
+				  	<td><img id="picture" src="{{ url_for('static',filename='styles/chinmay.jpeg') }}" height="100" width="100"></td>
+				  	
+				  </tr>
+				  <tr class="info">
+				  	<td height="100" width="100">AISHWARYA H.S</td>
+				  	<td height="100" width="100">1DS14EC014</td>
+				  	<td><img id="picture" src="{{ url_for('static',filename='styles/aishwarya.jpeg') }}" height="100" width="100"></td>
+				  	
+				  </tr>
+				  
+				</table>
+		</div>
+
+	</div>
+
+</div>
+
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+

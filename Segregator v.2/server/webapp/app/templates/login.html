@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<br><br><br><br><br><hr>
+<div class="container main-body">
+	<br><br><hr>
+	<div class="row">
+		<div class="col-md-12">
+			<h1 id="signin">
+				Sign In !
+			</h1>
+			<hr>
+		</div>
+	</div>
+	<form action="" method="post">
+	<div class="row">
+		<div class="col-md-12" id="form">
+			
+				{{ form.hidden_tag() }}
+				<p>
+					{{ form.username.label }}<br>
+					{{ form.username(size=32 , class_='form-fields') }}<br>
+					{% for error in form.username.errors %}
+					<span style="color: red;">[{{ error }}]</span>
+					{% endfor %}
+				</p>
+				<p>
+					{{ form.password.label }}<br>
+			        {{ form.password(size=32 , class_='form-fields') }}<br>
+			        {% for error in form.password.errors %}
+			        <span style="color: red;">[{{ error }}]</span>
+			        {% endfor %}
+				</p>
+				<p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
+				
+		</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<p id="submit-field">{{ form.submit(class_='submit-button-login') }}</p>
+
+			</div>
+		</div>
+	</form>
+	<div class="row">
+		<div class="=col-md-12">
+			<span id='submit-field'><p><strong>New User? </strong><a href="{{ url_for('register') }}" id="new-user-link">Click to Register!</a></p></span>
+		</div>
+	</div>
+	
+</div>
+
+
+
+
+{% endblock %}

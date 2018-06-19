@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+<br><br><br><hr>
+
+<div class="container main-body">
+	<div class="row">
+		<div class="col-md-12">
+		  		<div class="jumbotron">
+		  			<h1 id="hdr">TEST RESULTS</h1>
+				</div>
+		</div> 
+	</div>
+	<div class="row top-row">
+		<div class="col-md-12">
+			<a href="{{ url_for('image',im=files[0:10]) }}"> <span class="glyphicon glyphicon-backward" aria-hidden="true"></span></a>
+		</div>
+	</div>
+	<br><br>
+	<div class="row">
+		<div class="col-md-6">
+			
+			<img src="{{ url_for('static',filename=files) }}" width=570 height=450 style="padding-left: 50px;">
+		</div >
+		<div class="col-md-5 col-md-offset-1" style="padding-right: 50px;">
+			<ul class="list-group" id="file-details">
+			  <li class="list-group-item object-properties" style="background-color: black; padding-left: 100px;">Date&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp: {{ date_info }}</li>
+			  <li class="list-group-item object-properties" style="background-color: #147a4e;padding-left: 100px;">Time&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp: {{ time_info }} </li>
+			  <li class="list-group-item object-properties" style="background-color: black;padding-left: 100px;">Bio&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp: {{ bio_info }}</li>
+			  <li class="list-group-item object-properties" style="background-color: #147a4e;padding-left: 100px;">Non-bio&nbsp&nbsp&nbsp&nbsp&nbsp: {{ nonbio_info }}</li>
+			  {% if category=="green" %}
+			  <li class="list-group-item object-properties" style="background-color: black; text-align: center; color: #46eaa3; font-size: 40px; ">BIODEGRADABLE</li>
+			  {% else %}
+			  <li class="list-group-item object-properties" style="background-color: black; text-align: center; color: #ff1c23;font-size: 35px;">NON-BIODEGRADABLE</li>
+			  {% endif %}
+
+			</ul>
+
+	</div>
+</div>
+
+</div>
+
+{% endblock %}

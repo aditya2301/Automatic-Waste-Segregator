@@ -1,0 +1,45 @@
+
+#info{
+	font-size: 23px;
+	font-family: 'Saira',sans-serif;
+	text-align: center;
+	color: black;
+}
+
+
+
+.dash-container{
+	height: 100%;
+}
+.images-table{ 
+    width: auto !important;
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+.folder-link {
+	color:black /*#1cd1ff*/;
+	font-size: 30px;
+}
+
+table tr.row-hover:hover{
+	background-color: #190101;
+
+}
+table tr.row-hover:hover .folder-link{
+	color:white;
+}
+table tr.image-hover:hover .folder-link{
+	color:black;
+}
+
+table tr.row-hover:hover .folder-link:hover{
+	color:#00ff83;
+}
+
+table.images-table tr.image-hover:hover{
+	background-color: black;
+}
+table.images-table tr.image-hover td:hover{
+	background-color: white;
+}
