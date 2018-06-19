@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- <div id='modal-disp' class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+    	<br>
+    	<br>
+      No new images!
+      <br>
+    	<br>
+    </div>
+  </div>
+</div>
+-->
+<div class="image-area">
+
+
+<div class="container dash-container main-body" >
+	
+	<hr>
+	<div class="row">
+		<br>
+		<hr >
+		<br>
+		<div class="col-md-12">
+			<div class="jumbotron ">
+		  		<h1 id="hdr">DASHBOARD</h1>
+			</div>
+		</div> 
+	</div>
+	{% if folders %}
+	<div class="row">
+		<div class="col-md-12 folder-list" id="info">
+			
+			Please select the Date to view their corresponding test results.<br><br>
+			{% set ns = namespace(counter=0) %}
+			<table class="table table-hover ">
+				{% for row in range(rows) %}
+				<tr class="row-hover">
+					{% for data in range(3) %}
+						{% if ns.counter  < folders|length %}
+							<td>
+								<a class="folder-link" href="{{ url_for('image',im=folders[ns.counter]) }}">{{  folders[ns.counter]  }}</a>
+								<br>
+								{% set ns.counter = ns.counter + 1 %}
+							</td>
+						{% endif %}
+					{% endfor %}
+				</tr>
+				{% endfor %}
+			</table>
+			
+		</div>
+	</div>
+	{% endif %}
+
+
+
+{% if images %}
+
+<div class="row" id="info">
+
+	<a href="{{ url_for('dashboard') }}"><span class="glyphicon glyphicon-backward" aria-hidden="true"></span></a>
+</div>
+<br><br>
+<div class="row">
+		<div class="col-md-12" id="info">
+			{% set ns = namespace(counter=0) %}
+			<table class="table table-hover table-condensed table-bordered images-table" cellspacing="5" cellpadding="5">
+				{% for row in range(rows) %}
+				<tr class="image-hover">
+					{% for data in range(3) %}
+						{% if ns.counter  < images|length %}
+							<td style="width:10%;">
+								<a href="{{ url_for('display',file=images[ns.counter][10:],folder=images[ns.counter][0:10]) }}"><img src="{{ url_for('static',filename=images[ns.counter]) }}" alt="User Image" width="200" height="180"></a>
+								<br>
+								{% set ns.counter = ns.counter + 1 %}
+							</td>
+						{% endif %}
+					{% endfor %}
+				</tr>
+				{% endfor %}
+			</table>
+		</div>
+	</div>
+
+
+
+	<script type="text/javascript">
+
+	var first_time = 0;
+	var current_count = 0;
+	var total_count = 0;
+
+	function update(){
+		//$('#modal-disp').modal('show');
+	     //setTimeout(function() { $('#modal-disp').modal('hide'); }, 1000);
+	     //bootbox.alert("This is the default alert!");
+	     
+		
+	        if (first_time === 0){
+	            current_count = $('td').length;
+	            total_count = current_count;
+	            first_time = 1;
+	            //var txt = $("<p class='notify'></p>").text("No new images");
+	            
+	            var dialog = bootbox.dialog({
+				    message: '<br><p class="text-center" style="font-size:28px; font-family: "Saira",sans-serif;"><i class="fa fa-spinner fa-spin" style="font-size:24px"></i>    Syncing</p><br>',
+				    closeButton: false
+				});
+				setTimeout(function() { dialog.modal('hide'); }, 2000);
+
+	            //$('body').append("<div class='row'><div class='col-md-12'><p class='notify'><br>Up to date !</p></div></div>");
+	            //$('.notify').css({'color':'#06661f','font-size':'30px','font-family': "'Saira',sans-serif",'font-style':'bold','text-align': 'center'});
+	            $('html, body').animate({scrollTop:$(document).height()}, 'slow');
+	            
+	            //$('#myModal').modal('hide');
+	            //setTimeout(function() { $(".notify").text(""); }, 5000);
+
+	            
+	        }
+	        else {
+
+	            total_count = $('td').length;
+	            if (total_count>current_count){
+	            	var increase = String(total_count-current_count);
+	                //$('.notify').text(total_count-current_count + " new image added !");
+	                var dialog = bootbox.dialog({
+					    message: '<br><p class="text-center" style="font-size:28px; font-family: "Saira",sans-serif;"><i class="fas fa-bell"></i>'+'    ' + increase +' images added !</p><br>',
+					    closeButton: false
+					});
+					setTimeout(function() { dialog.modal('hide'); }, 2000);
+	                
+	                //$('.notify').css({'color':'#bc0041','font-size':'30px','font-family': "'Saira',sans-serif",'font-style':'bold','text-align': 'center' });
+	                $('html, body').animate({scrollTop:$(document).height()}, 'slow');
+	                //alert(total_count-current_count + ' images added !');
+	                current_count = total_count;
+	                //setTimeout(function() { $(".notify").text(""); }, 5000);
+
+	            }
+	        }
+	        
+	}
+		//setInterval(function(){ $('.image-area').load("{{ url_for('image',im=image_date) }}"); update(); }, 2000);
+
+
+		setInterval(function(){$('.image-area').load("{{ url_for('image',im=image_date) }}", function() {update();}); }, 2000);
+
+
+
+			
+
+    
+</script>
+
+{% endif %}
+
+</div>
+</div>
+
+
+
+{% endblock %}
+
+
+

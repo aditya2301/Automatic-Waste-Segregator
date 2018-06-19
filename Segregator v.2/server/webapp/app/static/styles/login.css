@@ -1,0 +1,39 @@
+#signin{
+	font-size: 80px;
+	font-family: 'Saira',sans-serif;
+	text-align: center;
+	color: black;
+}
+
+#form{
+	font-size: 20px;
+	font-family: 'Saira',sans-serif;
+	margin-left: 25%;
+	color: black;
+}
+.form-fields{
+	width: 600px;
+	height: 30px;
+	border-radius: 3px;
+	border-width: 1px;
+}
+#submit-field{
+	text-align: center;
+	font-family: 'Saira',sans-serif;
+	font-size: 20px;
+	
+}
+.submit-button-login{
+	border-radius: 15px;
+	border-width: 1px;
+	height: 40px;
+	width: 300px;
+	background-color: black;
+	font-family: 'Saira',sans-serif;
+	font-size: 25px;
+	color: white;
+
+}
+#new-user-link{
+	color: #c100fc;
+}

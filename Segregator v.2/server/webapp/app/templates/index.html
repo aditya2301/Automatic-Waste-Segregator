@@ -1,0 +1,83 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container main-body">
+
+	
+	<div class="row">
+		<div class="col-md-6" id="introduction">
+				<hr>
+				<br>
+				<br>
+				<p>The exponential growth of waste materials due to
+				rapid urbanization has put an immense pressure on our
+				environment. Improper handling of waste materials and their
+				disposal has polluted our ground water and land resources.
+				Therefore, it is imperative that we examine the process of waste
+				collection, segregation and automation for better management of
+				the waste materials. If the waste items are segregated properly at
+				their grassroots level, a major portion of the waste management
+				cycle is covered. The usage of automation in segregation of waste
+				items can greatly improve its efficiency and at the same time
+				reduce the health hazards associated with manual segregation.</p>
+		</div>
+			<div class="col-md-4 ">
+			<hr>
+			<br>
+			<br>
+			<iframe width="540" height="400" src="https://www.youtube.com/embed/dU-jUhHxNQU" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="jumbotron">
+		  <h1 id="hdr">AUTOMATIC WASTE SEGREGATOR</h1>
+
+		</div>
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-md-5">
+			<img src="{{ url_for('static',filename='styles/dustbin_index.jpg') }}" width=480px height=320px>
+
+		</div>
+		<div class="col-md-6 col-md-offset-1" id="introduction">
+			<hr>
+			<p>This project provides a solution that can detect, identify and
+			segregate waste items into biodegradable and non-biodegradable
+			categories without any human assistance. The Automatic waste
+			segregator is a centrally partitioned bin. It uses
+			Image Processing to detect an object that is thrown into it's flap.
+			Machine Learning is used to identify the category of the waste
+			item. The waste item is then deposited into its respective
+			compartment by the rotating the flap. </p> 
+			
+		</div>
+			
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-md-6 " id="introduction">
+			<hr>
+			<p>The project uses Machine Learning to identify the waste items. A brief introduction about the Machine Learning technology is provided in the video below.<br><br>
+			The system is monitored in real-time using a web server built using Flask. Navigate to <strong>Dashboard</strong> section to view the operation of the system in real-time.
+			</p>
+			
+		</div>
+		<div class="col-md-6">
+			<hr>
+			<iframe width="550" height="245" src="https://www.youtube.com/embed/yofjFQddwHE" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe> 
+			
+		</div>
+	</div>
+	<hr>
+	
+</div>
+
+
+
+
+
+{% endblock %}

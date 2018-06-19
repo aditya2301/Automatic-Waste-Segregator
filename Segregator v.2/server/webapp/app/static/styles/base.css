@@ -1,0 +1,38 @@
+#header{
+	font-size: 22px;
+	font-family: 'Saira', sans-serif;
+	color:black/* #ffffff*/;
+}
+
+#header:hover{
+	color:white;
+}
+a span#logo{
+	font-size: 60px;
+	color:black/*#ffffff*/;
+}
+#logo:hover{
+	color: white;
+}
+
+.navbar-custom{
+	background-color:#4fcca8 /*#ff002e*/;
+	height: 58px;
+}
+.nav-custom:hover{
+	background-color:#0a301e;
+}
+ul.nav a:hover {
+	background-color:#0a301e;
+	color: black;
+}
+
+
+.glyphicon{
+	color: black/*#ffffff*/;
+
+}
+
+.glyphicon:hover {
+	color: white;
+}
