@@ -96,19 +96,9 @@ There are 2 versions of the system:<br>
 </table>
 <br><br>
 
-## Contributors
 
-<table>
-	<tr>
-		<td><a href="https://github.com/boudhayan-dev"><img src="images/contributor1.png"></a></td>
-		<td><a href="https://github.com/chinmay4382"><img src="images/contributor2.png"></a></td>
-	</tr>
-	<tr>
-		<td><a href="https://www.linkedin.com/in/aishwarya-h-s-9b0b6a126/"><img src="images/contributor3.png"></a></td>
-		<td><a href="https://github.com/aditya2301"><img src="images/contributor4.png"></a></td>
-	</tr>
-</table>
 <br>
+
 
 © All rights reserved.
 
